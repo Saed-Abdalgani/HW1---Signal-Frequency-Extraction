@@ -82,69 +82,69 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 4A.1  | Implement SignalGenerator class               | 🔴  | ⬜     | PRD FR-1, PRD_sig §4       | generate_clean(), generate_noisy() return ndarray (N,)          |
-| 4A.2  | Validate signal-gen inputs (range checks)     | 🔴  | ⬜     | PRD_sig §11 SG-T6          | f>0, fs ≥ 2·f_max, dur>0, σ≥0; ValueError otherwise            |
-| 4A.3  | Implement Nyquist guard at startup            | 🔴  | ⬜     | PRD_sig §2                 | Raises if max(frequencies) > sampling_rate / 2                  |
-| 4A.4  | Implement DatasetBuilder (sliding window)     | 🔴  | ⬜     | PRD FR-2, PRD_sig §6       | Produces (N − W) entries per signal                             |
-| 4A.5  | Implement one-hot encoder for freq labels     | 🔴  | ⬜     | PRD FR-2                   | Shape (4,) float32; sums to 1.0                                 |
-| 4A.6  | Implement DatasetSplitter (stratified 70/15/15)| 🔴 | ⬜     | PRD FR-2                   | Each split contains entries for all 4 frequencies               |
-| 4A.7  | Implement DataNormalizer (fit on train only)  | 🔴  | ⬜     | PRD_sig §7                 | No leakage; same mean/std applied to val + test                 |
-| 4A.8  | Implement DataPersistence via Gatekeeper      | 🔴  | ⬜     | PLAN §6, ADR-4             | save/load .npz; all I/O via get_gatekeeper("file_io")           |
-| 4A.9  | Build PyTorch Dataset for MLP                 | 🔴  | ⬜     | PLAN §5                    | __getitem__ returns (X[14], y[1])                               |
-| 4A.10 | Build PyTorch Dataset for sequential models   | 🔴  | ⬜     | PLAN §5                    | __getitem__ returns (X[10,5], y[1])                             |
-| 4A.11 | Add DataLoader factory with worker_init_fn    | 🔴  | ⬜     | PRD_tr §8                  | Determinism: same seed → same batches                           |
-| 4A.12 | Verify file ≤ 145 code lines                  | 🔴  | ⬜     | NFR-3 (v1.10)              | data_service.py within new limit; split if needed               |
+| 4A.1  | Implement SignalGenerator class               | 🔴  | ✅     | PRD FR-1, PRD_sig §4       | generate_clean(), generate_noisy() return ndarray (N,)          |
+| 4A.2  | Validate signal-gen inputs (range checks)     | 🔴  | ✅     | PRD_sig §11 SG-T6          | f>0, fs ≥ 2·f_max, dur>0, σ≥0; ValueError otherwise            |
+| 4A.3  | Implement Nyquist guard at startup            | 🔴  | ✅     | PRD_sig §2                 | Raises if max(frequencies) > sampling_rate / 2                  |
+| 4A.4  | Implement DatasetBuilder (sliding window)     | 🔴  | ✅     | PRD FR-2, PRD_sig §6       | Produces (N − W) entries per signal                             |
+| 4A.5  | Implement one-hot encoder for freq labels     | 🔴  | ✅     | PRD FR-2                   | Shape (4,) float32; sums to 1.0                                 |
+| 4A.6  | Implement DatasetSplitter (stratified 70/15/15)| 🔴 | ✅     | PRD FR-2                   | Each split contains entries for all 4 frequencies               |
+| 4A.7  | Implement DataNormalizer (fit on train only)  | 🔴  | ✅     | PRD_sig §7                 | No leakage; same mean/std applied to val + test                 |
+| 4A.8  | Implement DataPersistence via Gatekeeper      | 🔴  | ✅     | PLAN §6, ADR-4             | save/load .npz; all I/O via get_gatekeeper("file_io")           |
+| 4A.9  | Build PyTorch Dataset for MLP                 | 🔴  | ✅     | PLAN §5                    | __getitem__ returns (X[14], y[1])                               |
+| 4A.10 | Build PyTorch Dataset for sequential models   | 🔴  | ✅     | PLAN §5                    | __getitem__ returns (X[10,5], y[1])                             |
+| 4A.11 | Add DataLoader factory with worker_init_fn    | 🔴  | ✅     | PRD_tr §8                  | Determinism: same seed → same batches                           |
+| 4A.12 | Verify file ≤ 145 code lines                  | 🔴  | ✅     | NFR-3 (v1.10)              | data_service.py within new limit; split if needed               |
 
 ### 4B — Model Definitions (one file per architecture)
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 4B.1  | Implement MLPModel (services/mlp_model.py)    | 🔴  | ⬜     | PRD FR-3, PRD_mod §3       | 14→64→128→64→1 with Tanh; forward returns (B,1)                 |
-| 4B.2  | Implement RNNModel (services/rnn_model.py)    | 🔴  | ⬜     | PRD FR-4, PRD_mod §4       | 2-layer RNN, hidden=64; final hidden → Linear → (B,1)           |
-| 4B.3  | Implement LSTMModel (services/lstm_model.py)  | 🔴  | ⬜     | PRD FR-5, PRD_mod §5       | 2-layer LSTM, hidden=64; final hidden → Linear → (B,1)          |
-| 4B.4  | Add model.count_parameters() helper           | 🟡  | ⬜     | PRD_mod §6                 | Returns trainable parameter count                               |
-| 4B.5  | Implement ModelFactory.create_model(type)     | 🔴  | ⬜     | PLAN §6                    | "mlp" \| "rnn" \| "lstm" → correct class; raises on unknown     |
-| 4B.6  | Verify orthogonal init for RNN/LSTM weights   | 🟡  | ⬜     | PRD_mod §7                 | Recurrent weights initialised orthogonally                      |
-| 4B.7  | Confirm dropout=0.1 applied between layers    | 🟡  | ⬜     | PRD FR-4, FR-5             | Both RNN and LSTM use dropout between layers                    |
-| 4B.8  | Verify each model file ≤ 145 code lines       | 🔴  | ⬜     | NFR-3 (v1.10)              | mlp_model.py, rnn_model.py, lstm_model.py all comply            |
+| 4B.1  | Implement MLPModel (services/mlp_model.py)    | 🔴  | ✅     | PRD FR-3, PRD_mod §3       | 14→64→128→64→1 with Tanh; forward returns (B,1)                 |
+| 4B.2  | Implement RNNModel (services/rnn_model.py)    | 🔴  | ✅     | PRD FR-4, PRD_mod §4       | 2-layer RNN, hidden=64; final hidden → Linear → (B,1)           |
+| 4B.3  | Implement LSTMModel (services/lstm_model.py)  | 🔴  | ✅     | PRD FR-5, PRD_mod §5       | 2-layer LSTM, hidden=64; final hidden → Linear → (B,1)          |
+| 4B.4  | Add model.count_parameters() helper           | 🟡  | ✅     | PRD_mod §6                 | Returns trainable parameter count                               |
+| 4B.5  | Implement ModelFactory.create_model(type)     | 🔴  | ✅     | PLAN §6                    | "mlp" \| "rnn" \| "lstm" → correct class; raises on unknown     |
+| 4B.6  | Verify orthogonal init for RNN/LSTM weights   | 🟡  | ✅     | PRD_mod §7                 | Recurrent weights initialised orthogonally                      |
+| 4B.7  | Confirm dropout=0.1 applied between layers    | 🟡  | ✅     | PRD FR-4, FR-5             | Both RNN and LSTM use dropout between layers                    |
+| 4B.8  | Verify each model file ≤ 145 code lines       | 🔴  | ✅     | NFR-3 (v1.10)              | mlp_model.py, rnn_model.py, lstm_model.py all comply            |
 
 ### 4C — TrainingService (services/training_service.py)
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 4C.1  | Implement train_one_epoch()                   | 🔴  | ⬜     | PRD FR-6, PRD_tr §7        | Returns mean training loss for the epoch                        |
-| 4C.2  | Implement evaluate() (val/test loop)          | 🔴  | ⬜     | PRD FR-6                   | Returns mean MSE; eval() mode; no_grad context                  |
-| 4C.3  | Implement EarlyStopping helper class          | 🔴  | ⬜     | PRD_tr §6                  | patience, min_delta; restores best weights                      |
-| 4C.4  | Add ReduceLROnPlateau scheduler hook          | 🔴  | ⬜     | PRD_tr §4                  | Halves LR after lr_reduce_patience epochs of no improvement     |
-| 4C.5  | Add gradient clipping (max_norm=1.0)          | 🔴  | ⬜     | PRD_tr §7                  | Applied before optimizer.step() in every iteration              |
-| 4C.6  | Add checkpoint save via Gatekeeper            | 🔴  | ⬜     | PLAN §5, ADR-4             | Schema matches PLAN §5; saved to results/checkpoints/           |
-| 4C.7  | Add checkpoint load + state restoration       | 🔴  | ⬜     | PLAN §5                    | Validates config_version; restores model + optimizer            |
-| 4C.8  | Set all 4 random seeds at training start      | 🔴  | ⬜     | PRD_tr §8                  | torch + numpy + random + cudnn all seeded                       |
-| 4C.9  | Log per-epoch train/val MSE                   | 🟡  | ⬜     | PRD FR-6                   | Structured log lines (one per epoch)                            |
-| 4C.10 | Verify training_service.py ≤ 145 code lines   | 🔴  | ⬜     | NFR-3 (v1.10)              | Split into helper modules if over limit                         |
+| 4C.1  | Implement train_one_epoch()                   | 🔴  | ✅     | PRD FR-6, PRD_tr §7        | Returns mean training loss for the epoch                        |
+| 4C.2  | Implement evaluate() (val/test loop)          | 🔴  | ✅     | PRD FR-6                   | Returns mean MSE; eval() mode; no_grad context                  |
+| 4C.3  | Implement EarlyStopping helper class          | 🔴  | ✅     | PRD_tr §6                  | patience, min_delta; restores best weights                      |
+| 4C.4  | Add ReduceLROnPlateau scheduler hook          | 🔴  | ✅     | PRD_tr §4                  | Halves LR after lr_reduce_patience epochs of no improvement     |
+| 4C.5  | Add gradient clipping (max_norm=1.0)          | 🔴  | ✅     | PRD_tr §7                  | Applied before optimizer.step() in every iteration              |
+| 4C.6  | Add checkpoint save via Gatekeeper            | 🔴  | ✅     | PLAN §5, ADR-4             | Schema matches PLAN §5; saved to results/checkpoints/           |
+| 4C.7  | Add checkpoint load + state restoration       | 🔴  | ✅     | PLAN §5                    | Validates config_version; restores model + optimizer            |
+| 4C.8  | Set all 4 random seeds at training start      | 🔴  | ✅     | PRD_tr §8                  | torch + numpy + random + cudnn all seeded                       |
+| 4C.9  | Log per-epoch train/val MSE                   | 🟡  | ✅     | PRD FR-6                   | Structured log lines (one per epoch)                            |
+| 4C.10 | Verify training_service.py ≤ 145 code lines   | 🔴  | ✅     | NFR-3 (v1.10)              | Split into helper modules if over limit                         |
 
 ### 4D — EvaluationService (services/evaluation_service.py)
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 4D.1  | Implement compute_split_mse()                 | 🔴  | ⬜     | PRD FR-7                   | Returns dict {train, val, test} → MSE                           |
-| 4D.2  | Implement plot_training_curves()              | 🔴  | ⬜     | PRD_tr §11                 | Saves results/training_curves.png at ≥150 dpi                   |
-| 4D.3  | Implement plot_predictions() per model        | 🔴  | ⬜     | PRD_tr §11                 | Saves results/predictions_<model>.png for each                  |
-| 4D.4  | Implement plot_noise_robustness()             | 🔴  | ⬜     | PRD FR-7, PRD_tr §10       | Saves results/noise_robustness.png; tests σ ∈ {.05..0.50}       |
-| 4D.5  | Implement plot_per_frequency_mse()            | 🔴  | ⬜     | PRD FR-7                   | Bar chart: 3 models × 4 frequencies                             |
-| 4D.6  | Implement plot_signal_examples()              | 🔴  | ⬜     | PRD FR-7                   | Clean / noisy / target overlay per frequency                    |
-| 4D.7  | Implement build_comparison_table()            | 🔴  | ⬜     | PRD FR-7                   | Markdown table with train/val/test MSE per model                |
-| 4D.8  | Apply consistent plot style (axes, fonts)     | 🟡  | ⬜     | PRD FR-7                   | All plots: title, axis labels, legend, accessible colours       |
-| 4D.9  | Verify evaluation_service.py ≤ 145 code lines | 🔴  | ⬜     | NFR-3 (v1.10)              | Split into plot_helpers.py if necessary                         |
+| 4D.1  | Implement compute_split_mse()                 | 🔴  | ✅     | PRD FR-7                   | Returns dict {train, val, test} → MSE                           |
+| 4D.2  | Implement plot_training_curves()              | 🔴  | ✅     | PRD_tr §11                 | Saves results/training_curves.png at ≥150 dpi                   |
+| 4D.3  | Implement plot_predictions() per model        | 🔴  | ✅     | PRD_tr §11                 | Saves results/predictions_<model>.png for each                  |
+| 4D.4  | Implement plot_noise_robustness()             | 🔴  | ✅     | PRD FR-7, PRD_tr §10       | Saves results/noise_robustness.png; tests σ ∈ {.05..0.50}       |
+| 4D.5  | Implement plot_per_frequency_mse()            | 🔴  | ✅     | PRD FR-7                   | Bar chart: 3 models × 4 frequencies                             |
+| 4D.6  | Implement plot_signal_examples()              | 🔴  | ✅     | PRD FR-7                   | Clean / noisy / target overlay per frequency                    |
+| 4D.7  | Implement build_comparison_table()            | 🔴  | ✅     | PRD FR-7                   | Markdown table with train/val/test MSE per model                |
+| 4D.8  | Apply consistent plot style (axes, fonts)     | 🟡  | ✅     | PRD FR-7                   | All plots: title, axis labels, legend, accessible colours       |
+| 4D.9  | Verify evaluation_service.py ≤ 145 code lines | 🔴  | ✅     | NFR-3 (v1.10)              | Split into plot_helpers.py if necessary                         |
 
 ### 4E — Cross-Cutting Service Concerns
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 4E.1  | Verify ALL service files ≤ 145 code lines     | 🔴  | ⬜     | NFR-3 (v1.10)              | Line-counter script confirms compliance                         |
-| 4E.2  | Add docstring to every public class/function  | 🔴  | ⬜     | NFR-3                      | Manual review or ruff D-rules                                   |
-| 4E.3  | Confirm no service imports sdk.py             | 🔴  | ⬜     | PLAN §1                    | Static grep returns 0 hits                                      |
-| 4E.4  | Confirm no service hardcodes operational vals | 🔴  | ⬜     | NFR-4                      | Frequencies, paths, etc. all loaded from config                 |
+| 4E.1  | Verify ALL service files ≤ 145 code lines     | 🔴  | ✅     | NFR-3 (v1.10)              | Line-counter script confirms compliance                         |
+| 4E.2  | Add docstring to every public class/function  | 🔴  | ✅     | NFR-3                      | Manual review or ruff D-rules                                   |
+| 4E.3  | Confirm no service imports sdk.py             | 🔴  | ✅     | PLAN §1                    | Static grep returns 0 hits                                      |
+| 4E.4  | Confirm no service hardcodes operational vals | 🔴  | ✅     | NFR-4                      | Frequencies, paths, etc. all loaded from config                 |
 
 ### 4F — UIService: Sinusoid Explorer Dashboard (services/ui_service.py)
 
@@ -152,58 +152,58 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #      | Task                                                       | Pri | Status | Refs                        | Definition of Done                                                    |
 |--------|------------------------------------------------------------|-----|--------|-----------------------------|-----------------------------------------------------------------------|
-| 4F-1.1 | Create services/ui_service.py skeleton                     | 🔴  | ⬜     | PRD FR-9, PLAN ADR-6        | `UIService` class; `build_app()` returns Dash app object              |
-| 4F-1.2 | Apply dark theme (background #0d1117, text #e6edf3)        | 🔴  | ⬜     | PRD FR-9                    | All panels match screenshots' dark palette                            |
-| 4F-1.3 | Build header metrics bar (Fs, N-CYC, T, h, F_MIN)         | 🔴  | ⬜     | PRD FR-9 §9.3               | Bar auto-updates on any parameter change                              |
-| 4F-1.4 | Create left sidebar: Global Parameters panel               | 🔴  | ⬜     | PRD FR-9 §9.1               | Fs slider, N-cycles, BW, Display toggle, Noise dropdown, Filter DD    |
-| 4F-1.5 | Add SWEEP NOISE animated button                            | 🔴  | ⬜     | PRD FR-9 §9.1               | Interval component sweeps σ 0→1→0; updates combined signal plot       |
-| 4F-1.6 | Create per-sinusoid control blocks (Sin 1..Sin 4)          | 🔴  | ⬜     | PRD FR-9 §9.2               | Each has MIX/BPF checkboxes, f/φ/A sliders, unique colour dot        |
-| 4F-1.7 | Verify ui_service.py split across helper files ≤ 145 lines | 🔴  | ⬜     | NFR-3 (v1.10)               | ui_service.py + ui_callbacks.py + ui_layout.py each ≤ 145 lines      |
+| 4F-1.1 | Create services/ui_service.py skeleton                     | 🔴  | ✅     | PRD FR-9, PLAN ADR-6        | `UIService` class; `build_app()` returns Dash app object              |
+| 4F-1.2 | Apply dark theme (background #0d1117, text #e6edf3)        | 🔴  | ✅     | PRD FR-9                    | All panels match screenshots' dark palette                            |
+| 4F-1.3 | Build header metrics bar (Fs, N-CYC, T, h, F_MIN)         | 🔴  | ✅     | PRD FR-9 §9.3               | Bar auto-updates on any parameter change                              |
+| 4F-1.4 | Create left sidebar: Global Parameters panel               | 🔴  | ✅     | PRD FR-9 §9.1               | Fs slider, N-cycles, BW, Display toggle, Noise dropdown, Filter DD    |
+| 4F-1.5 | Add SWEEP NOISE animated button                            | 🔴  | ✅     | PRD FR-9 §9.1               | Interval component sweeps σ 0→1→0; updates combined signal plot       |
+| 4F-1.6 | Create per-sinusoid control blocks (Sin 1..Sin 4)          | 🔴  | ✅     | PRD FR-9 §9.2               | Each has MIX/BPF checkboxes, f/φ/A sliders, unique colour dot        |
+| 4F-1.7 | Verify ui_service.py split across helper files ≤ 145 lines | 🔴  | ✅     | NFR-3 (v1.10)               | ui_service.py + ui_callbacks.py + ui_layout.py each ≤ 145 lines      |
 
 #### 4F-2 — SIGNALS Tab
 
 | #      | Task                                                       | Pri | Status | Refs                        | Definition of Done                                                    |
 |--------|------------------------------------------------------------|-----|--------|-----------------------------|-----------------------------------------------------------------------|
-| 4F-2.1 | Implement Individual Sinusoids upper plot                  | 🔴  | ⬜     | PRD FR-9 §9.4               | One Plotly trace per active sinusoid; colour matches Sin N dot        |
-| 4F-2.2 | Implement Combined Signal — Clean lower plot               | 🔴  | ⬜     | PRD FR-9 §9.4               | Sum of MIX-checked components; white trace; label "Mixed clean"       |
-| 4F-2.3 | Support LINE / DOTS display toggle                         | 🔴  | ⬜     | PRD FR-9 §9.1               | Toggling changes `mode` in all traces to "lines" or "markers"         |
-| 4F-2.4 | Hover tooltip shows (t, value) on both plots               | 🔴  | ⬜     | PRD FR-9 §9.4               | Plotly hovertemplate set; verified on both plots                      |
-| 4F-2.5 | Plot toolbar: camera (save PNG), zoom, reset axes          | 🔴  | ⬜     | PRD FR-9 §9.4               | Plotly config modebar_add includes camera + zoom                      |
-| 4F-2.6 | Apply per-sinusoid bandpass filter when BPF checked        | 🔴  | ⬜     | PRD FR-9 §9.2               | scipy.signal.butter bandpass centred at f ± BW/2                      |
-| 4F-2.7 | Apply global noise to combined signal based on Noise DD    | 🟡  | ⬜     | PRD FR-9 §9.1               | "Gaussian" adds N(0, σ²); "Uniform" adds U(−σ, σ); "None" = clean    |
+| 4F-2.1 | Implement Individual Sinusoids upper plot                  | 🔴  | ✅     | PRD FR-9 §9.4               | One Plotly trace per active sinusoid; colour matches Sin N dot        |
+| 4F-2.2 | Implement Combined Signal — Clean lower plot               | 🔴  | ✅     | PRD FR-9 §9.4               | Sum of MIX-checked components; white trace; label "Mixed clean"       |
+| 4F-2.3 | Support LINE / DOTS display toggle                         | 🔴  | ✅     | PRD FR-9 §9.1               | Toggling changes `mode` in all traces to "lines" or "markers"         |
+| 4F-2.4 | Hover tooltip shows (t, value) on both plots               | 🔴  | ✅     | PRD FR-9 §9.4               | Plotly hovertemplate set; verified on both plots                      |
+| 4F-2.5 | Plot toolbar: camera (save PNG), zoom, reset axes          | 🔴  | ✅     | PRD FR-9 §9.4               | Plotly config modebar_add includes camera + zoom                      |
+| 4F-2.6 | Apply per-sinusoid bandpass filter when BPF checked        | 🔴  | ✅     | PRD FR-9 §9.2               | scipy.signal.butter bandpass centred at f ± BW/2                      |
+| 4F-2.7 | Apply global noise to combined signal based on Noise DD    | 🟡  | ✅     | PRD FR-9 §9.1               | "Gaussian" adds N(0, σ²); "Uniform" adds U(−σ, σ); "None" = clean    |
 
 #### 4F-3 — T-SNE 3D Tab
 
 | #      | Task                                                       | Pri | Status | Refs                        | Definition of Done                                                    |
 |--------|------------------------------------------------------------|-----|--------|-----------------------------|-----------------------------------------------------------------------|
-| 4F-3.1 | Compute sliding-window features from active sinusoids      | 🔴  | ⬜     | PRD FR-10                   | Feature matrix shape (N_windows, window_size)                         |
-| 4F-3.2 | Run sklearn TSNE(n_components=3) on features               | 🔴  | ⬜     | PRD FR-10                   | Result shape (N_windows, 3)                                           |
-| 4F-3.3 | Render Plotly go.Scatter3d colour-coded by frequency label | 🔴  | ⬜     | PRD FR-10                   | 4 colours match Sin 1..4; interactive rotate/zoom                     |
-| 4F-3.4 | Show perplexity and iteration controls in tab header       | 🟡  | ⬜     | PRD FR-10                   | Sliders update t-SNE on change                                        |
+| 4F-3.1 | Compute sliding-window features from active sinusoids      | 🔴  | ✅     | PRD FR-10                   | Feature matrix shape (N_windows, window_size)                         |
+| 4F-3.2 | Run sklearn TSNE(n_components=3) on features               | 🔴  | ✅     | PRD FR-10                   | Result shape (N_windows, 3)                                           |
+| 4F-3.3 | Render Plotly go.Scatter3d colour-coded by frequency label | 🔴  | ✅     | PRD FR-10                   | 4 colours match Sin 1..4; interactive rotate/zoom                     |
+| 4F-3.4 | Show perplexity and iteration controls in tab header       | 🟡  | ✅     | PRD FR-10                   | Sliders update t-SNE on change                                        |
 
 #### 4F-4 — PCA 3D Tab
 
 | #      | Task                                                       | Pri | Status | Refs                        | Definition of Done                                                    |
 |--------|------------------------------------------------------------|-----|--------|-----------------------------|-----------------------------------------------------------------------|
-| 4F-4.1 | Run sklearn PCA(n_components=3) on same feature matrix     | 🔴  | ⬜     | PRD FR-11                   | Result shape (N_windows, 3)                                           |
-| 4F-4.2 | Render Plotly go.Scatter3d colour-coded by frequency label | 🔴  | ⬜     | PRD FR-11                   | 4 colours; interactive rotate/zoom                                    |
-| 4F-4.3 | Annotate each axis with explained variance ratio (%)       | 🔴  | ⬜     | PRD FR-11                   | Axis title = "PC1 (42.3 %)" format                                    |
+| 4F-4.1 | Run sklearn PCA(n_components=3) on same feature matrix     | 🔴  | ✅     | PRD FR-11                   | Result shape (N_windows, 3)                                           |
+| 4F-4.2 | Render Plotly go.Scatter3d colour-coded by frequency label | 🔴  | ✅     | PRD FR-11                   | 4 colours; interactive rotate/zoom                                    |
+| 4F-4.3 | Annotate each axis with explained variance ratio (%)       | 🔴  | ✅     | PRD FR-11                   | Axis title = "PC1 (42.3 %)" format                                    |
 
 #### 4F-5 — FFT Spectrum Tab
 
 | #      | Task                                                       | Pri | Status | Refs                        | Definition of Done                                                    |
 |--------|------------------------------------------------------------|-----|--------|-----------------------------|-----------------------------------------------------------------------|
-| 4F-5.1 | Compute np.fft.rfft on combined clean signal               | 🔴  | ⬜     | PRD FR-12                   | Magnitude spectrum computed correctly                                 |
-| 4F-5.2 | Render Plotly line chart: frequency (Hz) vs magnitude      | 🔴  | ⬜     | PRD FR-12                   | X-axis 0..Nyquist; Y-axis magnitude                                   |
-| 4F-5.3 | Add vertical markers at each active sinusoid's frequency   | 🔴  | ⬜     | PRD FR-12                   | Colour-matched dashed vertical lines                                  |
-| 4F-5.4 | Add BW shaded regions when BPF enabled                     | 🟡  | ⬜     | PRD FR-12                   | go.Scatter fill between f−BW/2 and f+BW/2                            |
-| 4F-5.5 | Add log-scale toggle for frequency axis                    | 🟡  | ⬜     | PRD FR-12                   | Button switches xaxis.type log ↔ linear                               |
+| 4F-5.1 | Compute np.fft.rfft on combined clean signal               | 🔴  | ✅     | PRD FR-12                   | Magnitude spectrum computed correctly                                 |
+| 4F-5.2 | Render Plotly line chart: frequency (Hz) vs magnitude      | 🔴  | ✅     | PRD FR-12                   | X-axis 0..Nyquist; Y-axis magnitude                                   |
+| 4F-5.3 | Add vertical markers at each active sinusoid's frequency   | 🔴  | ✅     | PRD FR-12                   | Colour-matched dashed vertical lines                                  |
+| 4F-5.4 | Add BW shaded regions when BPF enabled                     | 🟡  | ✅     | PRD FR-12                   | go.Scatter fill between f−BW/2 and f+BW/2                            |
+| 4F-5.5 | Add log-scale toggle for frequency axis                    | 🟡  | ✅     | PRD FR-12                   | Button switches xaxis.type log ↔ linear                               |
 
 #### 4F-6 — CLI Integration & Validation
 
 | #      | Task                                                       | Pri | Status | Refs                        | Definition of Done                                                    |
 |--------|------------------------------------------------------------|-----|--------|-----------------------------|-----------------------------------------------------------------------|
-| 4F-6.1 | Add `launch_ui(port)` method to UIService                  | 🔴  | ⬜     | PRD FR-13                   | Calls `app.run(debug=False, port=port)`                               |
+| 4F-6.1 | Add `launch_ui(port)` method to UIService                  | 🔴  | ✅     | PRD FR-13                   | Calls `app.run(debug=False, port=port)`                               |
 | 4F-6.2 | Add `--mode ui` to SDK and main.py                         | 🔴  | ⬜     | PRD FR-13, FR-8             | Calls `sdk.launch_ui(port=args.port)`                                 |
 | 4F-6.3 | Add `--port` argument to main.py (default 8050)            | 🟡  | ⬜     | PRD FR-13                   | Argparse integer; passed through to UIService                         |
 | 4F-6.4 | Verify Dash app starts and responds on port 8050           | 🔴  | ⬜     | PRD FR-13                   | `uv run python src/main.py --mode ui` opens browser; 200 OK response  |
