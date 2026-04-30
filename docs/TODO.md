@@ -214,16 +214,16 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 5.1   | Create sdk/__init__.py exposing SDK class     | 🔴  | ⬜     | PLAN §1                    | `from freq_extractor.sdk import FreqExtractorSDK` works         |
-| 5.2   | Implement FreqExtractorSDK.generate_data()    | 🔴  | ⬜     | PRD FR-1, FR-2             | Wraps DataService; returns split datasets                       |
-| 5.3   | Implement FreqExtractorSDK.train(model_type)  | 🔴  | ⬜     | PRD FR-6                   | Wraps TrainingService; returns checkpoint path + final mse      |
-| 5.4   | Implement FreqExtractorSDK.evaluate(model)    | 🔴  | ⬜     | PRD FR-7                   | Wraps EvaluationService; returns metrics dict                   |
-| 5.5   | Implement FreqExtractorSDK.run_all()          | 🔴  | ⬜     | PRD US-1, FR-8             | Generate → train all 3 → evaluate → save all plots              |
-| 5.6   | Verify CLI does NOT import services directly  | 🔴  | ⬜     | PLAN §1                    | Only imports sdk.* — static grep                                |
-| 5.7   | Create src/main.py CLI                        | 🔴  | ⬜     | PRD FR-8                   | --mode, --model, --seed args parsed                             |
-| 5.8   | Add CLI argument validation                   | 🔴  | ⬜     | PRD FR-8                   | Invalid choices → user-friendly argparse error                  |
-| 5.9   | Honour FREQ_EXTRACTOR_FORCE_CPU env var       | 🟡  | ⬜     | .env-example               | Forces CPU when set to "1"                                      |
-| 5.10  | Verify sdk.py + main.py ≤ 145 code lines      | 🔴  | ⬜     | NFR-3 (v1.10)              | Within new limit                                                |
+| 5.1   | Create sdk/__init__.py exposing SDK class     | 🔴  | ✅     | PLAN §1                    | `from freq_extractor.sdk import FreqExtractorSDK` works         |
+| 5.2   | Implement FreqExtractorSDK.generate_data()    | 🔴  | ✅     | PRD FR-1, FR-2             | Wraps DataService; returns split datasets                       |
+| 5.3   | Implement FreqExtractorSDK.train(model_type)  | 🔴  | ✅     | PRD FR-6                   | Wraps TrainingService; returns checkpoint path + final mse      |
+| 5.4   | Implement FreqExtractorSDK.evaluate(model)    | 🔴  | ✅     | PRD FR-7                   | Wraps EvaluationService; returns metrics dict                   |
+| 5.5   | Implement FreqExtractorSDK.run_all()          | 🔴  | ✅     | PRD US-1, FR-8             | Generate → train all 3 → evaluate → save all plots              |
+| 5.6   | Verify CLI does NOT import services directly  | 🔴  | ✅     | PLAN §1                    | Only imports sdk.* — static grep                                |
+| 5.7   | Create src/main.py CLI                        | 🔴  | ✅     | PRD FR-8                   | --mode, --model, --seed args parsed                             |
+| 5.8   | Add CLI argument validation                   | 🔴  | ✅     | PRD FR-8                   | Invalid choices → user-friendly argparse error                  |
+| 5.9   | Honour FREQ_EXTRACTOR_FORCE_CPU env var       | 🟡  | ✅     | .env-example               | Forces CPU when set to "1"                                      |
+| 5.10  | Verify sdk.py + main.py ≤ 145 code lines      | 🔴  | ✅     | NFR-3 (v1.10)              | Within new limit                                                |
 
 ---
 
