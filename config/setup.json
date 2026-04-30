@@ -1,0 +1,48 @@
+{
+  "version": "1.00",
+  "signal": {
+    "frequencies_hz": [5, 15, 30, 50],
+    "amplitude": 1.0,
+    "sampling_rate_hz": 200,
+    "duration_seconds": 10.0,
+    "noise_std_ratio": 0.10,
+    "window_size": 10
+  },
+  "dataset": {
+    "train_ratio": 0.70,
+    "val_ratio": 0.15,
+    "test_ratio": 0.15,
+    "seed": 42,
+    "data_dir": "data"
+  },
+  "model": {
+    "hidden_size": 64,
+    "num_layers": 2,
+    "dropout": 0.1,
+    "mlp_hidden_sizes": [64, 128, 64]
+  },
+  "training": {
+    "batch_size": 64,
+    "max_epochs": 300,
+    "learning_rate": 0.001,
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "adam_eps": 1e-8,
+    "early_stop_patience": 20,
+    "early_stop_min_delta": 1e-6,
+    "lr_reduce_factor": 0.5,
+    "lr_reduce_patience": 10,
+    "lr_min": 1e-6,
+    "grad_clip_max_norm": 1.0,
+    "checkpoint_dir": "results/checkpoints"
+  },
+  "evaluation": {
+    "noise_levels_for_robustness": [0.05, 0.10, 0.20, 0.30, 0.50],
+    "results_dir": "results",
+    "plot_dpi": 150,
+    "n_prediction_examples": 100
+  },
+  "logging": {
+    "config_file": "config/logging_config.json"
+  }
+}

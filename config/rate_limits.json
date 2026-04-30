@@ -1,0 +1,28 @@
+{
+  "rate_limits": {
+    "version": "1.00",
+    "services": {
+      "default": {
+        "requests_per_minute": 60,
+        "requests_per_hour": 1000,
+        "concurrent_max": 4,
+        "retry_after_seconds": 5,
+        "max_retries": 3
+      },
+      "file_io": {
+        "requests_per_minute": 120,
+        "requests_per_hour": 3000,
+        "concurrent_max": 8,
+        "retry_after_seconds": 2,
+        "max_retries": 5
+      },
+      "checkpoint": {
+        "requests_per_minute": 30,
+        "requests_per_hour": 500,
+        "concurrent_max": 2,
+        "retry_after_seconds": 10,
+        "max_retries": 3
+      }
+    }
+  }
+}

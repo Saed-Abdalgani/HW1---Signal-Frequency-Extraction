@@ -1,0 +1,95 @@
+# =============================================================================
+# Secrets and credentials — NEVER commit these
+# =============================================================================
+.env
+credentials.json
+*.key
+*.pem
+secrets.*
+*_secret*
+*_password*
+*_token*
+
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# =============================================================================
+# Virtual environments (use uv, not venv/virtualenv)
+# =============================================================================
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# =============================================================================
+# Testing and coverage
+# =============================================================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.cover
+coverage.xml
+nosetests.xml
+pytest.xml
+
+# =============================================================================
+# IDEs and editors
+# =============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# =============================================================================
+# Jupyter notebooks (checkpoints)
+# =============================================================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# =============================================================================
+# Project-specific: keep results structure but not large binary outputs
+# =============================================================================
+# Uncomment to ignore model checkpoints (keep for reproducibility in this project)
+# results/checkpoints/
+
+# Keep data directory structure but not generated data (regenerate with uv run python src/main.py)
+# data/*.npz
+
+# =============================================================================
+# OS and system files
+# =============================================================================
+*.log
+*.tmp
+*.bak
+*.orig
+
+# uv
+.python-version
