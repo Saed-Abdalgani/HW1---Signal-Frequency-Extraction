@@ -1,0 +1,12 @@
+
+#freq-1 .rc-slider-track, #phase-1 .rc-slider-track, #amp-1 .rc-slider-track, #sigma-1 .rc-slider-track { background-color: #00d2ff !important; }
+#freq-1 .rc-slider-handle, #phase-1 .rc-slider-handle, #amp-1 .rc-slider-handle, #sigma-1 .rc-slider-handle { border: 2px solid #00d2ff !important; background-color: #00d2ff !important; }
+
+#freq-2 .rc-slider-track, #phase-2 .rc-slider-track, #amp-2 .rc-slider-track, #sigma-2 .rc-slider-track { background-color: #ff6b6b !important; }
+#freq-2 .rc-slider-handle, #phase-2 .rc-slider-handle, #amp-2 .rc-slider-handle, #sigma-2 .rc-slider-handle { border: 2px solid #ff6b6b !important; background-color: #ff6b6b !important; }
+
+#freq-3 .rc-slider-track, #phase-3 .rc-slider-track, #amp-3 .rc-slider-track, #sigma-3 .rc-slider-track { background-color: #51cf66 !important; }
+#freq-3 .rc-slider-handle, #phase-3 .rc-slider-handle, #amp-3 .rc-slider-handle, #sigma-3 .rc-slider-handle { border: 2px solid #51cf66 !important; background-color: #51cf66 !important; }
+
+#freq-4 .rc-slider-track, #phase-4 .rc-slider-track, #amp-4 .rc-slider-track, #sigma-4 .rc-slider-track { background-color: #ffd43b !important; }
+#freq-4 .rc-slider-handle, #phase-4 .rc-slider-handle, #amp-4 .rc-slider-handle, #sigma-4 .rc-slider-handle { border: 2px solid #ffd43b !important; background-color: #ffd43b !important; }

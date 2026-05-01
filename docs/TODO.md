@@ -381,40 +381,40 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 7A.1  | Generate canonical dataset (seed=42)          | 🔴  | ⬜     | PRD §15                    | data/dataset.npz produced                                       |
-| 7A.2  | Train MLP to convergence                      | 🔴  | ⬜     | PRD goal 2                 | Best checkpoint saved; logs captured                            |
-| 7A.3  | Train RNN to convergence                      | 🔴  | ⬜     | PRD goal 2                 | Best checkpoint saved; logs captured                            |
-| 7A.4  | Train LSTM to convergence                     | 🔴  | ⬜     | PRD goal 2                 | Best checkpoint saved; logs captured                            |
-| 7A.5  | Run noise-robustness sweep (5 σ levels)       | 🔴  | ⬜     | PRD FR-7                   | results/noise_robustness.png produced                           |
-| 7A.6  | Run per-frequency MSE analysis                | 🔴  | ⬜     | PRD FR-7                   | results/per_frequency_mse.png produced                          |
-| 7A.7  | Verify at least one model < 0.05 test MSE     | 🔴  | ⬜     | PRD goal 3                 | Comparison table shows passing entry                            |
-| 7A.8  | Capture training console logs to file         | 🟡  | ⬜     | PLAN §8                    | results/freq_extractor.log present                              |
+| 7A.1  | Generate canonical dataset (seed=42)          | 🔴  | ✅     | PRD §15                    | data/dataset.npz produced                                       |
+| 7A.2  | Train MLP to convergence                      | 🔴  | ✅     | PRD goal 2                 | Best checkpoint saved; logs captured                            |
+| 7A.3  | Train RNN to convergence                      | 🔴  | ✅     | PRD goal 2                 | Best checkpoint saved; logs captured                            |
+| 7A.4  | Train LSTM to convergence                     | 🔴  | ✅     | PRD goal 2                 | Best checkpoint saved; logs captured                            |
+| 7A.5  | Run noise-robustness sweep (5 σ levels)       | 🔴  | ✅     | PRD FR-7                   | results/noise_robustness.png produced                           |
+| 7A.6  | Run per-frequency MSE analysis                | 🔴  | ✅     | PRD FR-7                   | results/per_frequency_mse.png produced                          |
+| 7A.7  | Verify at least one model < 0.05 test MSE     | 🔴  | ✅     | PRD goal 3                 | Comparison table shows passing entry                            |
+| 7A.8  | Capture training console logs to file         | 🟡  | ✅     | PLAN §8                    | results/freq_extractor.log present                              |
 
 ### 7B — README (Lab-Report) Sections
 
 | #     | Section                                       | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 7B.1  | Project overview & objectives                 | 🔴  | ⬜     | PRD §1                     | 1–2 paragraphs + bullet objectives                              |
-| 7B.2  | Theoretical background (Fourier, Nyquist)     | 🔴  | ⬜     | PRD_sig §2                 | Includes equations + Nyquist explanation                        |
-| 7B.3  | RNN/LSTM theory + gating diagrams             | 🔴  | ⬜     | PRD_mod §5                 | Equations and conceptual figures                                |
-| 7B.4  | Dataset-generation methodology                | 🔴  | ⬜     | PRD_sig §3,4               | Frequency-choice rationale + parameters                         |
-| 7B.5  | Architecture descriptions w/ design choices   | 🔴  | ⬜     | PRD_mod §3-5               | Each model justified with trade-offs                            |
-| 7B.6  | Training procedure & hyperparameters          | 🔴  | ⬜     | PRD_tr §5                  | All hyperparams listed with rationale                           |
-| 7B.7  | Quantitative results (MSE table)              | 🔴  | ⬜     | PRD FR-7                   | MLP vs RNN vs LSTM train/val/test                               |
-| 7B.8  | Training curves figure                        | 🔴  | ⬜     | PRD_tr §11                 | Embedded results/training_curves.png                            |
-| 7B.9  | Prediction-comparison figures                 | 🔴  | ⬜     | PRD_tr §11                 | One per model; embedded                                         |
-| 7B.10 | Noise-robustness analysis                     | 🔴  | ⬜     | PRD FR-7                   | Plot + commentary                                               |
-| 7B.11 | Per-frequency analysis                        | 🔴  | ⬜     | PRD FR-7                   | Plot + which frequencies hardest                                |
-| 7B.12 | Conclusions & observations                    | 🔴  | ⬜     | PRD §15                    | Which model wins + theoretical explanation                      |
-| 7B.13 | Reproduction instructions                     | 🔴  | ⬜     | NFR-7                      | Exact commands + expected wall-clock time                       |
-| 7B.14 | Repository link                               | 🔴  | ⬜     | PRD §15                    | GitHub URL prominently shown                                    |
-| 7B.15 | Installation + uv quickstart                  | 🔴  | ⬜     | PRD §11                    | uv sync; uv run python src/main.py --mode all                   |
-| 7B.16 | Configuration guide                           | 🔴  | ⬜     | NFR-7                      | Documented setup.json keys                                      |
-| 7B.17 | Troubleshooting                               | 🟡  | ⬜     | NFR-7                      | At least 5 common failure modes                                 |
-| 7B.18 | Testing instructions                          | 🔴  | ⬜     | NFR-5                      | uv run pytest tests/ --cov=src                                  |
-| 7B.19 | Linting instructions                          | 🔴  | ⬜     | KPI                        | uv run ruff check .                                             |
-| 7B.20 | Contribution guidelines                       | 🟢  | ⬜     | PRD §15                    | Branching, PR process                                           |
-| 7B.21 | Credits + License (MIT)                       | 🔴  | ⬜     | PRD §15                    | MIT text or reference                                           |
+| 7B.1  | Project overview & objectives                 | 🔴  | ✅     | PRD §1                     | 1–2 paragraphs + bullet objectives                              |
+| 7B.2  | Theoretical background (Fourier, Nyquist)     | 🔴  | ✅     | PRD_sig §2                 | Includes equations + Nyquist explanation                        |
+| 7B.3  | RNN/LSTM theory + gating diagrams             | 🔴  | ✅     | PRD_mod §5                 | Equations and conceptual figures                                |
+| 7B.4  | Dataset-generation methodology                | 🔴  | ✅     | PRD_sig §3,4               | Frequency-choice rationale + parameters                         |
+| 7B.5  | Architecture descriptions w/ design choices   | 🔴  | ✅     | PRD_mod §3-5               | Each model justified with trade-offs                            |
+| 7B.6  | Training procedure & hyperparameters          | 🔴  | ✅     | PRD_tr §5                  | All hyperparams listed with rationale                           |
+| 7B.7  | Quantitative results (MSE table)              | 🔴  | ✅     | PRD FR-7                   | MLP vs RNN vs LSTM train/val/test                               |
+| 7B.8  | Training curves figure                        | 🔴  | ✅     | PRD_tr §11                 | Embedded results/training_curves.png                            |
+| 7B.9  | Prediction-comparison figures                 | 🔴  | ✅     | PRD_tr §11                 | One per model; embedded                                         |
+| 7B.10 | Noise-robustness analysis                     | 🔴  | ✅     | PRD FR-7                   | Plot + commentary                                               |
+| 7B.11 | Per-frequency analysis                        | 🔴  | ✅     | PRD FR-7                   | Plot + which frequencies hardest                                |
+| 7B.12 | Conclusions & observations                    | 🔴  | ✅     | PRD §15                    | Which model wins + theoretical explanation                      |
+| 7B.13 | Reproduction instructions                     | 🔴  | ✅     | NFR-7                      | Exact commands + expected wall-clock time                       |
+| 7B.14 | Repository link                               | 🔴  | ✅     | PRD §15                    | GitHub URL prominently shown                                    |
+| 7B.15 | Installation + uv quickstart                  | 🔴  | ✅     | PRD §11                    | uv sync; uv run python src/main.py --mode all                   |
+| 7B.16 | Configuration guide                           | 🔴  | ✅     | NFR-7                      | Documented setup.json keys                                      |
+| 7B.17 | Troubleshooting                               | 🟡  | ✅     | NFR-7                      | At least 5 common failure modes                                 |
+| 7B.18 | Testing instructions                          | 🔴  | ✅     | NFR-5                      | uv run pytest tests/ --cov=src                                  |
+| 7B.19 | Linting instructions                          | 🔴  | ✅     | KPI                        | uv run ruff check .                                             |
+| 7B.20 | Contribution guidelines                       | 🟢  | ✅     | PRD §15                    | Branching, PR process                                           |
+| 7B.21 | Credits + License (MIT)                       | 🔴  | ✅     | PRD §15                    | MIT text or reference                                           |
 
 ---
 
@@ -489,13 +489,13 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 | DOC.1 | All public functions have NumPy docstrings    | 🔴  | ⬜     | PRD_tr §13                 | Args/Returns/Raises documented                                  |
 | DOC.2 | All public classes have docstrings            | 🔴  | ⬜     | PRD §11                    | Purpose + attributes documented                                 |
 | DOC.3 | Type hints on every public signature          | 🔴  | ⬜     | NFR-2                      | mypy strict (or ruff TYPE) clean                                |
-| DOC.4 | README contains all 21 sections (7B.1–7B.21)  | 🔴  | ⬜     | Phase 7B                   | Cross-checked vs section list                                   |
-| DOC.5 | All figures captioned + referenced in README  | 🔴  | ⬜     | PRD_tr §11                 | Each PNG appears in body with caption                           |
-| DOC.6 | Hyperparameter table with rationale           | 🔴  | ⬜     | PRD_tr §5                  | Every choice justified                                          |
-| DOC.7 | Activation-function rationale per model       | 🔴  | ⬜     | PRD_mod §3-5               | ReLU/Tanh/Sigmoid choices explained                             |
-| DOC.8 | Learning-rate + schedule rationale            | 🔴  | ⬜     | PRD_tr §5                  | Why 1e-3 + ReduceLROnPlateau                                    |
-| DOC.9 | Batch-size rationale                          | 🔴  | ⬜     | PRD_tr §5                  | Why 32 (memory + variance trade-off)                            |
-| DOC.10| Best-model justification w/ theory            | 🔴  | ⬜     | PRD goal 4                 | Theoretical + empirical evidence                                |
+| DOC.4 | README contains all 21 sections (7B.1–7B.21)  | 🔴  | ✅     | Phase 7B                   | Cross-checked vs section list                                   |
+| DOC.5 | All figures captioned + referenced in README  | 🔴  | ✅     | PRD_tr §11                 | Each PNG appears in body with caption                           |
+| DOC.6 | Hyperparameter table with rationale           | 🔴  | ✅     | PRD_tr §5                  | Every choice justified                                          |
+| DOC.7 | Activation-function rationale per model       | 🔴  | ✅     | PRD_mod §3-5               | ReLU/Tanh/Sigmoid choices explained                             |
+| DOC.8 | Learning-rate + schedule rationale            | 🔴  | ✅     | PRD_tr §5                  | Why 1e-3 + ReduceLROnPlateau                                    |
+| DOC.9 | Batch-size rationale                          | 🔴  | ✅     | PRD_tr §5                  | Why 32 (memory + variance trade-off)                            |
+| DOC.10| Best-model justification w/ theory            | 🔴  | ✅     | PRD goal 4                 | Theoretical + empirical evidence                                |
 | DOC.11| Limitations + future work                     | 🟡  | ⬜     | PRD §15                    | Honest assessment included                                      |
 | DOC.12| ADR list inlined or linked                    | 🟡  | ⬜     | PLAN §9                    | All architectural decisions recorded                            |
 | DOC.13| docs/PROMPTS.md kept current                  | 🟡  | ⬜     | PRD §15                    | Records all prompts used                                        |

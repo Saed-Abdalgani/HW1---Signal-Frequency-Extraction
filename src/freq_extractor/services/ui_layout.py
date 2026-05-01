@@ -26,7 +26,7 @@ from freq_extractor.services.ui_components import (
 __all__ = ["SIN_COLOURS", "build_layout"]
 
 
-def build_layout(config: dict[str, Any]) -> list:
+def build_layout(config: dict[str, Any]) -> html.Div:
     """Assemble the full dashboard layout.
 
     Parameters
@@ -36,35 +36,28 @@ def build_layout(config: dict[str, Any]) -> list:
 
     Returns
     -------
-    list
-        Top-level Dash children list.
+    html.Div
+        Top-level Dash container.
     """
-    return [
-        html.H1(
-            "SINUSOID EXPLORER",
-            style={
-                "textAlign": "center", "padding": "16px 0 8px",
-                "background": "linear-gradient(90deg, #58a6ff, #51cf66)",
-                "WebkitBackgroundClip": "text",
-                "WebkitTextFillColor": "transparent",
-                "fontSize": "28px", "fontWeight": "800", "letterSpacing": "2px",
-            },
-        ),
-        header_metrics(),
+    return html.Div([
+        html.Div([
+            html.Div([
+                html.Div("(*)", className="app-logo"),
+                html.H1("SINUSOID EXPLORER", className="app-title"),
+            ], className="title-group"),
+            html.Div(header_metrics(), className="metrics-bar"),
+        ], className="app-header"),
         html.Div(
             [
                 html.Div(
                     [global_controls(config)] + build_sin_controls(),
-                    style={
-                        "width": "300px", "overflowY": "auto",
-                        "maxHeight": "90vh", "padding": "0 12px",
-                    },
+                    className="sidebar",
                 ),
                 html.Div(
                     [build_tabs()],
-                    style={"flex": "1", "padding": "0 12px"},
+                    className="main-content",
                 ),
             ],
-            style={"display": "flex", "gap": "8px"},
+            className="main-grid",
         ),
-    ]
+    ], className="dashboard-container")

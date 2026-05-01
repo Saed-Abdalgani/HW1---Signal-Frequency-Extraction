@@ -45,20 +45,15 @@ class UIService:
         dash.Dash
             Fully configured Dash app object.
         """
+        import os
+        assets_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "assets")
         self._app = dash.Dash(
             __name__,
             title="SINUSOID EXPLORER",
+            assets_folder=assets_path,
             suppress_callback_exceptions=True,
         )
-        self._app.layout = html.Div(
-            build_layout(self.config),
-            style={
-                "backgroundColor": "#0d1117",
-                "color": "#e6edf3",
-                "fontFamily": "'Inter', 'Segoe UI', sans-serif",
-                "minHeight": "100vh",
-            },
-        )
+        self._app.layout = build_layout(self.config)
         register_callbacks(self._app, self.config)
         logger.info("Sinusoid Explorer app built successfully.")
         return self._app

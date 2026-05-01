@@ -1,14 +1,8 @@
 """Dash callbacks for analysis tabs (T-SNE, PCA, FFT).
-
 Separated from ``ui_callbacks.py`` to comply with ≤ 145 code-line limit.
-
-References
-----------
-- PRD FR-10, FR-11, FR-12
 """
 
 from __future__ import annotations
-
 from typing import Any
 
 import numpy as np
@@ -46,12 +40,12 @@ def register_analysis_callbacks(app: Any, all_inputs: list) -> None:
         window = 10
         features, labels, colours = [], [], []
         for i in range(4):
-            mix = sin_vals[i * 5]
-            freq = sin_vals[i * 5 + 2]
+            mix = sin_vals[i * 6]
+            freq = sin_vals[i * 6 + 2]
             if not (mix and "mix" in mix and freq and freq > 0):
                 continue
-            phase = sin_vals[i * 5 + 3] or 0
-            amp = sin_vals[i * 5 + 4] or 1
+            phase = sin_vals[i * 6 + 3] or 0
+            amp = sin_vals[i * 6 + 4] or 1
             _, sig = _gen_sig(fs, n_cyc, freq, phase, amp)
             for j in range(len(sig) - window):
                 features.append(sig[j:j + window])
@@ -74,12 +68,12 @@ def register_analysis_callbacks(app: Any, all_inputs: list) -> None:
         window = 10
         features, labels, colours = [], [], []
         for i in range(4):
-            mix = sin_vals[i * 5]
-            freq = sin_vals[i * 5 + 2]
+            mix = sin_vals[i * 6]
+            freq = sin_vals[i * 6 + 2]
             if not (mix and "mix" in mix and freq and freq > 0):
                 continue
-            phase = sin_vals[i * 5 + 3] or 0
-            amp = sin_vals[i * 5 + 4] or 1
+            phase = sin_vals[i * 6 + 3] or 0
+            amp = sin_vals[i * 6 + 4] or 1
             _, sig = _gen_sig(fs, n_cyc, freq, phase, amp)
             for j in range(len(sig) - window):
                 features.append(sig[j:j + window])
@@ -108,14 +102,14 @@ def register_analysis_callbacks(app: Any, all_inputs: list) -> None:
         combined = None
         active_freqs = []
         for i in range(4):
-            mix = sin_vals[i * 5]
-            freq = sin_vals[i * 5 + 2]
+            mix = sin_vals[i * 6]
+            freq = sin_vals[i * 6 + 2]
             if not (mix and "mix" in mix and freq and freq > 0):
                 continue
-            phase = sin_vals[i * 5 + 3] or 0
-            amp = sin_vals[i * 5 + 4] or 1
+            phase = sin_vals[i * 6 + 3] or 0
+            amp = sin_vals[i * 6 + 4] or 1
             _, sig = _gen_sig(fs, n_cyc, freq, phase, amp)
-            bpf_val = sin_vals[i * 5 + 1] or []
+            bpf_val = sin_vals[i * 6 + 1] or []
             active_freqs.append((freq, SIN_COLOURS[i], bw or 5, "bpf" in bpf_val))
             if combined is None:
                 combined = np.zeros_like(sig)

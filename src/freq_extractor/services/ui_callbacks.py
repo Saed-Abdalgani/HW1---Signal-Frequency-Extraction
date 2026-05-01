@@ -21,8 +21,11 @@ from freq_extractor.services.ui_analysis import register_analysis_callbacks
 from freq_extractor.services.ui_layout import SIN_COLOURS
 
 _DARK_LAYOUT = {
-    "paper_bgcolor": "#0d1117", "plot_bgcolor": "#161b22",
-    "font": {"color": "#e6edf3"}, "margin": {"l": 40, "r": 20, "t": 40, "b": 40},
+    "paper_bgcolor": "#060b10", "plot_bgcolor": "#0d131a",
+    "font": {"color": "#8b949e", "family": "Inter"}, 
+    "margin": {"l": 40, "r": 20, "t": 40, "b": 40},
+    "xaxis": {"gridcolor": "#1e2632", "zerolinecolor": "#1e2632"},
+    "yaxis": {"gridcolor": "#1e2632", "zerolinecolor": "#1e2632"},
 }
 
 
@@ -46,7 +49,7 @@ def _apply_bpf(sig: np.ndarray, freq: float, bw: float, fs: float) -> np.ndarray
 
 
 def _add_noise(sig: np.ndarray, noise_type: str, rng: np.random.Generator) -> np.ndarray:
-    """Add noise to signal based on type selection."""
+    """Add global noise to signal based on type selection."""
     std = 0.2
     if noise_type == "Gaussian":
         return sig + rng.normal(0, std, size=sig.shape)
@@ -62,7 +65,7 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
         sin_inputs += [
             Input(f"mix-{i}", "value"), Input(f"bpf-{i}", "value"),
             Input(f"freq-{i}", "value"), Input(f"phase-{i}", "value"),
-            Input(f"amp-{i}", "value"),
+            Input(f"amp-{i}", "value"), Input(f"sigma-{i}", "value"),
         ]
     all_inputs = ([Input("fs-slider", "value"), Input("n-cycles", "value"),
                    Input("bw-slider", "value"), Input("display-toggle", "value"),
@@ -70,7 +73,7 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
                   + sin_inputs)
 
     @app.callback(
-        [Output(f"metric-{m}", "children") for m in ["Fs", "N-CYC", "T", "h", "F_MIN"]],
+        [Output(f"metric-{m}", "children") for m in ["Fs", "N-CYC", "T", "N", "F_MIN"]],
         [Input("fs-slider", "value"), Input("n-cycles", "value")]
         + [Input(f"freq-{i}", "value") for i in range(1, 5)],
     )
@@ -79,10 +82,10 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
         n_cyc = n_cyc or 2
         f_min = min(f for f in freqs if f and f > 0) if any(f and f > 0 for f in freqs) else 1
         dur = n_cyc / f_min
-        h = int(fs * dur)
-        f_res = fs / h if h > 0 else 0
-        return (f"Fs: {fs} Hz", f"N-CYC: {n_cyc}", f"T: {dur:.4f} s",
-                f"h: {h}", f"F_MIN: {f_res:.4f} Hz")
+        n_samp = int(fs * dur)
+        f_res = fs / n_samp if n_samp > 0 else 0
+        return (f"FS {fs} Hz", f"N-CYC {n_cyc}", f"T {dur:.3f} s",
+                f"N {n_samp} snp", f"F_MIN {f_res:.2f} Hz")
 
     @app.callback(
         [Output("individual-plot", "figure"), Output("combined-plot", "figure")],
@@ -93,18 +96,26 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
         n_cyc = n_cyc or 2
         mode = "markers" if display == "DOTS" else "lines"
         rng = np.random.default_rng(0)
-        ind_fig = go.Figure(layout={**_DARK_LAYOUT, "title": "Individual Sinusoids"})
+        
+        ind_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "① Individual Sinusoids (combined channels)", "font": {"color": "#3fb950"}}})
         combined = None
         t_ref = None
+        
         for i in range(4):
-            mix, bpf_v, freq, phase, amp = sin_vals[i * 5:(i + 1) * 5]
+            mix, bpf_v, freq, phase, amp, sigma = sin_vals[i * 6:(i + 1) * 6]
             if not freq or freq <= 0:
                 continue
             t, sig = _gen_signal(fs, n_cyc, freq, phase or 0, amp or 1)
+            
+            if sigma and sigma > 0:
+                sig = sig + rng.normal(0, sigma, size=sig.shape)
+                
             if bpf_v and "bpf" in bpf_v:
                 sig = _apply_bpf(sig, freq, bw or 5, fs)
+                
             ind_fig.add_trace(go.Scatter(x=t, y=sig, mode=mode,
-                name=f"Sin {i + 1} ({freq} Hz)", line={"color": SIN_COLOURS[i]}))
+                name=f"Sin {i + 1} pure", line={"color": SIN_COLOURS[i]}))
+                
             if mix and "mix" in mix:
                 if combined is None:
                     combined = np.zeros_like(sig)
@@ -113,11 +124,15 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
                     ml = min(len(sig), len(combined))
                     sig, combined, t_ref = sig[:ml], combined[:ml], t_ref[:ml]
                 combined += sig
-        comb_fig = go.Figure(layout={**_DARK_LAYOUT, "title": "Combined Signal"})
+                
+        comb_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "② Combined Signal - Clean", "font": {"color": "#3fb950"}}})
         if combined is not None:
             combined = _add_noise(combined, noise_type or "None", rng)
             comb_fig.add_trace(go.Scatter(x=t_ref, y=combined, mode=mode,
-                name="Mixed", line={"color": "#ffffff"}))
+                name="Mixed clean", line={"color": "#f0f6fc"}))
+                
+        ind_fig.update_layout(xaxis_title="t (s)")
+        comb_fig.update_layout(xaxis_title="t (s)")
         return ind_fig, comb_fig
 
     @app.callback(
