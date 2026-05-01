@@ -233,88 +233,88 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Task                                          | Pri | Status | Refs               | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|--------------------|-----------------------------------------------------------------|
-| 6A.1  | Create tests/conftest.py with shared fixtures | 🔴  | ⬜     | PLAN §10           | Fixtures: tmp_config_dir, sample_signal, small_dataset          |
-| 6A.2  | Add `set_seed` autouse fixture                | 🔴  | ⬜     | PRD_tr §8          | All tests deterministic                                         |
-| 6A.3  | Add tmp_path-based gatekeeper fixture         | 🔴  | ⬜     | PLAN §10           | Gatekeeper isolated per test                                    |
-| 6A.4  | Add small_dataset_factory fixture             | 🔴  | ⬜     | PLAN §10           | 80-entry dataset for fast tests                                 |
+| 6A.1  | Create tests/conftest.py with shared fixtures | 🔴  | ✅     | PLAN §10           | Fixtures: tmp_config_dir, sample_signal, small_dataset          |
+| 6A.2  | Add `set_seed` autouse fixture                | 🔴  | ✅     | PRD_tr §8          | All tests deterministic                                         |
+| 6A.3  | Add tmp_path-based gatekeeper fixture         | 🔴  | ✅     | PLAN §10           | Gatekeeper isolated per test                                    |
+| 6A.4  | Add small_dataset_factory fixture             | 🔴  | ✅     | PLAN §10           | 80-entry dataset for fast tests                                 |
 
 ### 6B — Signal-Generation Tests (test_data_service.py)
 
 | #     | Test ID         | Scenario                                    | Status | Refs            | Definition of Done                              |
 |-------|-----------------|---------------------------------------------|--------|-----------------|-------------------------------------------------|
-| 6B.1  | SG-T1           | FFT peak matches configured frequency       | ⬜     | PRD_sig §11     | abs(peak_f − expected_f) < 0.5 Hz               |
-| 6B.2  | SG-T2           | Noisy SNR ≈ 20 dB at σ=0.1                  | ⬜     | PRD_sig §11     | Computed SNR within ±2 dB                       |
-| 6B.3  | SG-T3           | Sliding-window count = N − W                | ⬜     | PRD_sig §11     | 1990 entries per 2000-sample signal             |
-| 6B.4  | SG-T4           | Reproducibility same seed → identical data  | ⬜     | PRD_sig §11     | np.array_equal across two runs                  |
-| 6B.5  | SG-T5           | σ=0 → noisy == clean                        | ⬜     | PRD_sig §11     | Element-wise equality                           |
-| 6B.6  | SG-T6           | window_size > N raises ValueError           | ⬜     | PRD_sig §11     | pytest.raises(ValueError)                       |
-| 6B.7  | SG-T7           | Splits sum to total                         | ⬜     | PRD_sig §11     | len(train)+len(val)+len(test) == total          |
-| 6B.8  | SG-T8 (new)     | One-hot label correctness                   | ⬜     | PRD FR-2        | sum(one_hot)==1; argmax matches freq index      |
-| 6B.9  | SG-T9 (new)     | Stratified split distributes all 4 freqs    | ⬜     | PRD FR-2        | Each split contains entries for every freq      |
-| 6B.10 | SG-T10 (new)    | Normaliser fit-on-train (no leakage)        | ⬜     | PRD_sig §7      | val/test stats ≠ train stats unless coincid.    |
-| 6B.11 | SG-T11 (new)    | Negative noise std raises ValueError        | ⬜     | PRD_sig §11     | pytest.raises(ValueError)                       |
-| 6B.12 | SG-T12 (new)    | Nyquist violation raises ValueError         | ⬜     | PRD_sig §2      | fs < 2·f_max → ValueError                       |
-| 6B.13 | SG-T13 (new)    | Zero-length duration raises ValueError      | ⬜     | PRD_sig §11     | duration_s ≤ 0 → ValueError                     |
-| 6B.14 | SG-T14 (new)    | Noise mean ≈ 0 (statistical test)           | ⬜     | PRD FR-1        | abs(mean(noise)) < 3·σ/√N                       |
-| 6B.15 | SG-T15 (new)    | Noise std matches σ·A within 5 %            | ⬜     | PRD FR-1        | abs(std(noise) − σA)/σA < 0.05                  |
+| 6B.1  | SG-T1           | FFT peak matches configured frequency       | ✅     | PRD_sig §11     | abs(peak_f − expected_f) < 0.5 Hz               |
+| 6B.2  | SG-T2           | Noisy SNR ≈ 20 dB at σ=0.1                  | ✅     | PRD_sig §11     | Computed SNR within ±2 dB                       |
+| 6B.3  | SG-T3           | Sliding-window count = N − W                | ✅     | PRD_sig §11     | 1990 entries per 2000-sample signal             |
+| 6B.4  | SG-T4           | Reproducibility same seed → identical data  | ✅     | PRD_sig §11     | np.array_equal across two runs                  |
+| 6B.5  | SG-T5           | σ=0 → noisy == clean                        | ✅     | PRD_sig §11     | Element-wise equality                           |
+| 6B.6  | SG-T6           | window_size > N raises ValueError           | ✅     | PRD_sig §11     | pytest.raises(ValueError)                       |
+| 6B.7  | SG-T7           | Splits sum to total                         | ✅     | PRD_sig §11     | len(train)+len(val)+len(test) == total          |
+| 6B.8  | SG-T8 (new)     | One-hot label correctness                   | ✅     | PRD FR-2        | sum(one_hot)==1; argmax matches freq index      |
+| 6B.9  | SG-T9 (new)     | Stratified split distributes all 4 freqs    | ✅     | PRD FR-2        | Each split contains entries for every freq      |
+| 6B.10 | SG-T10 (new)    | Normaliser fit-on-train (no leakage)        | ✅     | PRD_sig §7      | val/test stats ≠ train stats unless coincid.    |
+| 6B.11 | SG-T11 (new)    | Negative noise std raises ValueError        | ✅     | PRD_sig §11     | pytest.raises(ValueError)                       |
+| 6B.12 | SG-T12 (new)    | Nyquist violation raises ValueError         | ✅     | PRD_sig §2      | fs < 2·f_max → ValueError                       |
+| 6B.13 | SG-T13 (new)    | Zero-length duration raises ValueError      | ✅     | PRD_sig §11     | duration_s ≤ 0 → ValueError                     |
+| 6B.14 | SG-T14 (new)    | Noise mean ≈ 0 (statistical test)           | ✅     | PRD FR-1        | abs(mean(noise)) < 3·σ/√N                       |
+| 6B.15 | SG-T15 (new)    | Noise std matches σ·A within 5 %            | ✅     | PRD FR-1        | abs(std(noise) − σA)/σA < 0.05                  |
 
 ### 6C — MLP-Specific Tests (test_models.py::TestMLP)
 
 | #     | Test ID         | Scenario                                    | Status | Refs            | Definition of Done                              |
 |-------|-----------------|---------------------------------------------|--------|-----------------|-------------------------------------------------|
-| 6C.1  | MLP-T1          | Forward pass shape (B=32) → (32,1)          | ⬜     | PRD_mod §3      | Output shape correct; no NaN                    |
-| 6C.2  | MLP-T2          | Forward pass batch=1 works                  | ⬜     | PRD_mod §9      | No crash; (1,1) output                          |
-| 6C.3  | MLP-T3          | Parameter count ≈ 17 601 (±5 %)             | ⬜     | PRD_mod §6      | count_parameters() within tolerance              |
-| 6C.4  | MLP-T4          | Gradients flow through all 4 linear layers  | ⬜     | PRD_mod §9      | Every param.grad is not None and != 0           |
-| 6C.5  | MLP-T5          | Tanh activation present                     | ⬜     | PRD FR-3        | nn.Tanh found in module list                    |
-| 6C.6  | MLP-T6          | Wrong input dim raises clear error          | ⬜     | PRD_mod §9      | Input shape (B,13) → RuntimeError               |
-| 6C.7  | MLP-T7          | Serialise + deserialise via torch.save      | ⬜     | PLAN §5         | Loaded model gives identical output             |
+| 6C.1  | MLP-T1          | Forward pass shape (B=32) → (32,1)          | ✅     | PRD_mod §3      | Output shape correct; no NaN                    |
+| 6C.2  | MLP-T2          | Forward pass batch=1 works                  | ✅     | PRD_mod §9      | No crash; (1,1) output                          |
+| 6C.3  | MLP-T3          | Parameter count ≈ 17 601 (±5 %)             | ✅     | PRD_mod §6      | count_parameters() within tolerance              |
+| 6C.4  | MLP-T4          | Gradients flow through all 4 linear layers  | ✅     | PRD_mod §9      | Every param.grad is not None and != 0           |
+| 6C.5  | MLP-T5          | Tanh activation present                     | ✅     | PRD FR-3        | nn.Tanh found in module list                    |
+| 6C.6  | MLP-T6          | Wrong input dim raises clear error          | ✅     | PRD_mod §9      | Input shape (B,13) → RuntimeError               |
+| 6C.7  | MLP-T7          | Serialise + deserialise via torch.save      | ✅     | PLAN §5         | Loaded model gives identical output             |
 
 ### 6D — RNN-Specific Tests (test_models.py::TestRNN)
 
 | #     | Test ID         | Scenario                                    | Status | Refs            | Definition of Done                              |
 |-------|-----------------|---------------------------------------------|--------|-----------------|-------------------------------------------------|
-| 6D.1  | RNN-T1          | Forward pass shape (B=32, T=10) → (32,1)    | ⬜     | PRD_mod §4      | Output shape correct; no NaN                    |
-| 6D.2  | RNN-T2          | hidden_size == 64                           | ⬜     | PRD FR-4        | Internal hidden tensor has size 64              |
-| 6D.3  | RNN-T3          | num_layers == 2                             | ⬜     | PRD FR-4        | self.rnn.num_layers == 2                        |
-| 6D.4  | RNN-T4          | Variable sequence length supported          | ⬜     | PRD_mod §9      | T=5 and T=20 both run without error             |
-| 6D.5  | RNN-T5          | Recurrent weights orthogonally initialised  | ⬜     | PRD_mod §7      | Singular values ≈ 1                             |
-| 6D.6  | RNN-T6          | Gradients flow through both layers          | ⬜     | PRD_mod §9      | All recurrent params have non-zero grad         |
-| 6D.7  | RNN-T7          | Dropout active in train(), inactive in eval | ⬜     | PRD FR-4        | Different outputs in train; identical in eval   |
+| 6D.1  | RNN-T1          | Forward pass shape (B=32, T=10) → (32,1)    | ✅     | PRD_mod §4      | Output shape correct; no NaN                    |
+| 6D.2  | RNN-T2          | hidden_size == 64                           | ✅     | PRD FR-4        | Internal hidden tensor has size 64              |
+| 6D.3  | RNN-T3          | num_layers == 2                             | ✅     | PRD FR-4        | self.rnn.num_layers == 2                        |
+| 6D.4  | RNN-T4          | Variable sequence length supported          | ✅     | PRD_mod §9      | T=5 and T=20 both run without error             |
+| 6D.5  | RNN-T5          | Recurrent weights orthogonally initialised  | ✅     | PRD_mod §7      | Singular values ≈ 1                             |
+| 6D.6  | RNN-T6          | Gradients flow through both layers          | ✅     | PRD_mod §9      | All recurrent params have non-zero grad         |
+| 6D.7  | RNN-T7          | Dropout active in train(), inactive in eval | ✅     | PRD FR-4        | Different outputs in train; identical in eval   |
 
 ### 6E — LSTM-Specific Tests (test_models.py::TestLSTM)
 
 | #     | Test ID         | Scenario                                    | Status | Refs            | Definition of Done                              |
 |-------|-----------------|---------------------------------------------|--------|-----------------|-------------------------------------------------|
-| 6E.1  | LSTM-T1         | Forward pass shape (B=32, T=10) → (32,1)    | ⬜     | PRD_mod §5      | Output shape correct; no NaN                    |
-| 6E.2  | LSTM-T2         | Cell + hidden state both initialised        | ⬜     | PRD_mod §5      | h₀ and c₀ shapes (num_layers, B, 64)            |
-| 6E.3  | LSTM-T3         | Parameter count > RNN parameter count       | ⬜     | PRD_mod §6      | params(LSTM) ≈ 4 × params(RNN)                  |
-| 6E.4  | LSTM-T4         | Forget gate biases present                  | ⬜     | PRD_mod §5      | bias_hh_l0 has 4·hidden_size entries            |
-| 6E.5  | LSTM-T5         | Gradients flow through all 4 gate matrices  | ⬜     | PRD_mod §9      | weight_ih_l0 has 4·hidden rows w/ grads         |
-| 6E.6  | LSTM-T6         | Eval mode disables dropout                  | ⬜     | PRD FR-5        | Identical outputs in repeated eval calls        |
-| 6E.7  | LSTM-T7         | Outperforms MLP on f₁=5 Hz on smoke set     | 🟡 ⬜  | PRD_mod §5      | LSTM val MSE < MLP val MSE on f₁ subset         |
+| 6E.1  | LSTM-T1         | Forward pass shape (B=32, T=10) → (32,1)    | ✅     | PRD_mod §5      | Output shape correct; no NaN                    |
+| 6E.2  | LSTM-T2         | Cell + hidden state both initialised        | ✅     | PRD_mod §5      | h₀ and c₀ shapes (num_layers, B, 64)            |
+| 6E.3  | LSTM-T3         | Parameter count > RNN parameter count       | ✅     | PRD_mod §6      | params(LSTM) ≈ 4 × params(RNN)                  |
+| 6E.4  | LSTM-T4         | Forget gate biases present                  | ✅     | PRD_mod §5      | bias_hh_l0 has 4·hidden_size entries            |
+| 6E.5  | LSTM-T5         | Gradients flow through all 4 gate matrices  | ✅     | PRD_mod §9      | weight_ih_l0 has 4·hidden rows w/ grads         |
+| 6E.6  | LSTM-T6         | Eval mode disables dropout                  | ✅     | PRD FR-5        | Identical outputs in repeated eval calls        |
+| 6E.7  | LSTM-T7         | Outperforms MLP on f₁=5 Hz on smoke set     | 🟡 ✅  | PRD_mod §5      | LSTM val MSE < MLP val MSE on f₁ subset         |
 
 ### 6F — Model-Factory Tests
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 6F.1  | Factory returns MLPModel for "mlp"            | 🔴  | ⬜     | PRD_mod §9 MD-T6           | isinstance check passes                                         |
-| 6F.2  | Factory returns RNNModel for "rnn"            | 🔴  | ⬜     | PRD_mod §9                 | isinstance check passes                                         |
-| 6F.3  | Factory returns LSTMModel for "lstm"          | 🔴  | ⬜     | PRD_mod §9                 | isinstance check passes                                         |
-| 6F.4  | Factory raises on unknown model type          | 🔴  | ⬜     | PRD_mod §9                 | "transformer" → ValueError                                      |
+| 6F.1  | Factory returns MLPModel for "mlp"            | 🔴  | ✅     | PRD_mod §9 MD-T6           | isinstance check passes                                         |
+| 6F.2  | Factory returns RNNModel for "rnn"            | 🔴  | ✅     | PRD_mod §9                 | isinstance check passes                                         |
+| 6F.3  | Factory returns LSTMModel for "lstm"          | 🔴  | ✅     | PRD_mod §9                 | isinstance check passes                                         |
+| 6F.4  | Factory raises on unknown model type          | 🔴  | ✅     | PRD_mod §9                 | "transformer" → ValueError                                      |
 
 ### 6G — Training-Service Tests
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 6G.1  | TR-T1 smoke: 2-epoch train decreases loss     | 🔴  | ⬜     | PRD_tr §12                 | Final loss < initial loss                                       |
-| 6G.2  | TR-T2 early stopping fires at patience=2      | 🔴  | ⬜     | PRD_tr §12                 | Stops within ≤ patience+1 epochs                                |
-| 6G.3  | TR-T3 grad clipping prevents NaN              | 🔴  | ⬜     | PRD_tr §12                 | All losses finite under exploding gradients                     |
-| 6G.4  | TR-T4 checkpoint save + load round-trip       | 🔴  | ⬜     | PRD_tr §12                 | Loaded model gives identical predictions                        |
-| 6G.5  | TR-T5 LR scheduler halves LR on plateau       | 🔴  | ⬜     | PRD_tr §12                 | optimizer.lr halved after patience epochs                       |
-| 6G.6  | TR-T6 MSE(y, y) == 0                          | 🔴  | ⬜     | PRD_tr §12                 | Trivial equality test                                           |
-| 6G.7  | TR-T7 reproducibility two runs same seed      | 🔴  | ⬜     | PRD_tr §12                 | Identical final val_mse across runs                             |
-| 6G.8  | Training raises on empty DataLoader           | 🟡  | ⬜     | Edge case                  | Clear error if dataset is empty                                 |
+| 6G.1  | TR-T1 smoke: 2-epoch train decreases loss     | 🔴  | ✅     | PRD_tr §12                 | Final loss < initial loss                                       |
+| 6G.2  | TR-T2 early stopping fires at patience=2      | 🔴  | ✅     | PRD_tr §12                 | Stops within ≤ patience+1 epochs                                |
+| 6G.3  | TR-T3 grad clipping prevents NaN              | 🔴  | ✅     | PRD_tr §12                 | All losses finite under exploding gradients                     |
+| 6G.4  | TR-T4 checkpoint save + load round-trip       | 🔴  | ✅     | PRD_tr §12                 | Loaded model gives identical predictions                        |
+| 6G.5  | TR-T5 LR scheduler halves LR on plateau       | 🔴  | ✅     | PRD_tr §12                 | optimizer.lr halved after patience epochs                       |
+| 6G.6  | TR-T6 MSE(y, y) == 0                          | 🔴  | ✅     | PRD_tr §12                 | Trivial equality test                                           |
+| 6G.7  | TR-T7 reproducibility two runs same seed      | 🔴  | ✅     | PRD_tr §12                 | Identical final val_mse across runs                             |
+| 6G.8  | Training raises on empty DataLoader           | 🟡  | ✅     | Edge case                  | Clear error if dataset is empty                                 |
 
 ---
 
@@ -322,56 +322,56 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 6H.1  | parse_version("1.00") → (1,0)                 | 🔴  | ⬜     | PLAN §6                    | Tuple equality                                                  |
-| 6H.2  | parse_version invalid raises ValueError       | 🔴  | ⬜     | PLAN §6                    | "abc" → ValueError                                              |
-| 6H.3  | Major version mismatch rejected               | 🔴  | ⬜     | PLAN §6                    | "2.00" config → ValueError                                      |
-| 6H.4  | Out-of-range minor rejected                   | 🔴  | ⬜     | PLAN §6                    | Above MAX_CONFIG_VERSION → ValueError                           |
-| 6H.5  | Config cache returns same object              | 🟡  | ⬜     | PLAN §6                    | id(get_setup()) == id(get_setup())                              |
-| 6H.6  | clear_cache() forces re-read                  | 🟡  | ⬜     | PLAN §6                    | New file content seen after clear_cache()                       |
-| 6H.7  | Missing config file raises FileNotFoundError  | 🔴  | ⬜     | PLAN §8                    | Clear error message                                             |
-| 6H.8  | Gatekeeper executes successful call           | 🔴  | ⬜     | PLAN §6                    | Return value forwarded; total_calls += 1                        |
-| 6H.9  | Gatekeeper retries on transient failure       | 🔴  | ⬜     | PLAN §6                    | Eventually succeeds; total_retries > 0                          |
-| 6H.10 | Gatekeeper raises after max_retries           | 🔴  | ⬜     | PLAN §6                    | GatekeeperError raised                                          |
-| 6H.11 | get_queue_status returns 4 keys               | 🔴  | ⬜     | PLAN §6                    | queue_depth, total_calls, errors, retries                       |
-| 6H.12 | get_gatekeeper singleton per service name     | 🔴  | ⬜     | PLAN §6                    | Same instance returned twice                                    |
-| 6H.13 | Sliding-window rate limiter sleeps when full  | 🟡  | ⬜     | PLAN §6                    | Mocked time.sleep called when limit reached                     |
+| 6H.1  | parse_version("1.00") → (1,0)                 | 🔴  | ✅     | PLAN §6                    | Tuple equality                                                  |
+| 6H.2  | parse_version invalid raises ValueError       | 🔴  | ✅     | PLAN §6                    | "abc" → ValueError                                              |
+| 6H.3  | Major version mismatch rejected               | 🔴  | ✅     | PLAN §6                    | "2.00" config → ValueError                                      |
+| 6H.4  | Out-of-range minor rejected                   | 🔴  | ✅     | PLAN §6                    | Above MAX_CONFIG_VERSION → ValueError                           |
+| 6H.5  | Config cache returns same object              | 🟡  | ✅     | PLAN §6                    | id(get_setup()) == id(get_setup())                              |
+| 6H.6  | clear_cache() forces re-read                  | 🟡  | ✅     | PLAN §6                    | New file content seen after clear_cache()                       |
+| 6H.7  | Missing config file raises FileNotFoundError  | 🔴  | ✅     | PLAN §8                    | Clear error message                                             |
+| 6H.8  | Gatekeeper executes successful call           | 🔴  | ✅     | PLAN §6                    | Return value forwarded; total_calls += 1                        |
+| 6H.9  | Gatekeeper retries on transient failure       | 🔴  | ✅     | PLAN §6                    | Eventually succeeds; total_retries > 0                          |
+| 6H.10 | Gatekeeper raises after max_retries           | 🔴  | ✅     | PLAN §6                    | GatekeeperError raised                                          |
+| 6H.11 | get_queue_status returns 4 keys               | 🔴  | ✅     | PLAN §6                    | queue_depth, total_calls, errors, retries                       |
+| 6H.12 | get_gatekeeper singleton per service name     | 🔴  | ✅     | PLAN §6                    | Same instance returned twice                                    |
+| 6H.13 | Sliding-window rate limiter sleeps when full  | 🟡  | ✅     | PLAN §6                    | Mocked time.sleep called when limit reached                     |
 
 ### 6I — Integration Tests (test_pipeline.py)
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 6I.1  | End-to-end run_all() with tiny config         | 🔴  | ⬜     | PRD US-1                   | All 3 models train and produce metrics                          |
-| 6I.2  | Saved checkpoints load + reproduce metrics    | 🔴  | ⬜     | PRD_tr §13                 | Identical test MSE on reload                                    |
-| 6I.3  | All required result files present             | 🔴  | ⬜     | PRD_tr §11                 | 7 PNG files present in results/                                 |
-| 6I.4  | CLI invocation works (subprocess)             | 🟡  | ⬜     | PRD FR-8                   | exit code 0; stdout contains "complete"                         |
-| 6I.5  | CLI rejects invalid model type                | 🟡  | ⬜     | PRD FR-8                   | exit code != 0; informative stderr                              |
+| 6I.1  | End-to-end run_all() with tiny config         | 🔴  | ✅     | PRD US-1                   | All 3 models train and produce metrics                          |
+| 6I.2  | Saved checkpoints load + reproduce metrics    | 🔴  | ✅     | PRD_tr §13                 | Identical test MSE on reload                                    |
+| 6I.3  | All required result files present             | 🔴  | ✅     | PRD_tr §11                 | 7 PNG files present in results/                                 |
+| 6I.4  | CLI invocation works (subprocess)             | 🟡  | ✅     | PRD FR-8                   | exit code 0; stdout contains "complete"                         |
+| 6I.5  | CLI rejects invalid model type                | 🟡  | ✅     | PRD FR-8                   | exit code != 0; informative stderr                              |
 
 ### 6J — Coverage
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 6J.1  | Reach ≥ 85 % coverage globally                | 🔴  | ⬜     | NFR-5                      | `pytest --cov=src` reports ≥ 85 %                               |
-| 6J.2  | Each shared module ≥ 90 %                     | 🔴  | ⬜     | PLAN §10                   | shared/* coverage ≥ 90 %                                        |
-| 6J.3  | Each service module ≥ 90 %                    | 🔴  | ⬜     | PLAN §10                   | services/* coverage ≥ 90 %                                      |
-| 6J.4  | Verify all test files ≤ 145 code lines        | 🔴  | ⬜     | NFR-3 (v1.10)              | Test files obey same length rule                                |
+| 6J.1  | Reach ≥ 85 % coverage globally                | 🔴  | ✅     | NFR-5                      | `pytest --cov=src` reports ≥ 85 %                               |
+| 6J.2  | Each shared module ≥ 90 %                     | 🔴  | ✅     | PLAN §10                   | shared/* coverage ≥ 90 %                                        |
+| 6J.3  | Each service module ≥ 90 %                    | 🔴  | ✅     | PLAN §10                   | services/* coverage ≥ 90 %                                      |
+| 6J.4  | Verify all test files ≤ 145 code lines        | 🔴  | ✅     | NFR-3 (v1.10)              | Test files obey same length rule                                |
 
 ### 6K — UIService Tests (tests/unit/test_ui_service.py)
 
 | #     | Task                                           | Pri | Status | Refs                       | Definition of Done                                                     |
 |-------|------------------------------------------------|-----|--------|----------------------------|------------------------------------------------------------------------|
-| 6K.1  | build_app() returns Dash app object            | 🔴  | ⬜     | PRD FR-9                   | isinstance(app, dash.Dash)                                             |
-| 6K.2  | Header metrics update on Fs change             | 🔴  | ⬜     | PRD FR-9 §9.3              | Callback output contains updated Fs, T, h, F_MIN values                |
-| 6K.3  | Individual Sinusoids trace count == active Mix | 🔴  | ⬜     | PRD FR-9 §9.4              | 2 checked MIX → 2 traces in upper figure                               |
-| 6K.4  | Combined signal = sum of MIX components        | 🔴  | ⬜     | PRD FR-9 §9.4              | Mathematical equality within float tolerance                           |
-| 6K.5  | DOTS display mode sets trace mode="markers"    | 🔴  | ⬜     | PRD FR-9 §9.1              | All traces mode=="markers" when DOTS selected                          |
-| 6K.6  | LINE display mode sets trace mode="lines"      | 🔴  | ⬜     | PRD FR-9 §9.1              | All traces mode=="lines" when LINE selected                            |
-| 6K.7  | BPF checkbox triggers bandpass filter          | 🔴  | ⬜     | PRD FR-9 §9.2              | Filtered signal has attenuation outside f ± BW/2                       |
-| 6K.8  | Gaussian noise added to combined when selected | 🔴  | ⬜     | PRD FR-9 §9.1              | clean != noisy when noise=="Gaussian"                                  |
-| 6K.9  | FFT tab: peak matches active sinusoid f        | 🔴  | ⬜     | PRD FR-12                  | argmax(magnitude) within 1 bin of f                                    |
-| 6K.10 | T-SNE tab: output shape (N, 3)                 | 🔴  | ⬜     | PRD FR-10                  | TSNE result ndim==2 and shape[1]==3                                    |
-| 6K.11 | PCA tab: explained_variance_ratio_ sums ≤ 1    | 🔴  | ⬜     | PRD FR-11                  | sum(explained_variance_ratio_[:3]) ≤ 1.0                               |
-| 6K.12 | SWEEP NOISE interval callback executes         | 🟡  | ⬜     | PRD FR-9 §9.1              | Interval n_intervals increments → σ changes                            |
-| 6K.13 | Freq slider respects Nyquist maximum (Fs/2)    | 🔴  | ⬜     | PRD FR-9 §9.2, PRD_sig §2  | Slider max updates dynamically when Fs changes                         |
+| 6K.1  | build_app() returns Dash app object            | 🔴  | ✅     | PRD FR-9                   | isinstance(app, dash.Dash)                                             |
+| 6K.2  | Header metrics update on Fs change             | 🔴  | ✅     | PRD FR-9 §9.3              | Callback output contains updated Fs, T, h, F_MIN values                |
+| 6K.3  | Individual Sinusoids trace count == active Mix | 🔴  | ✅     | PRD FR-9 §9.4              | 2 checked MIX → 2 traces in upper figure                               |
+| 6K.4  | Combined signal = sum of MIX components        | 🔴  | ✅     | PRD FR-9 §9.4              | Mathematical equality within float tolerance                           |
+| 6K.5  | DOTS display mode sets trace mode="markers"    | 🔴  | ✅     | PRD FR-9 §9.1              | All traces mode=="markers" when DOTS selected                          |
+| 6K.6  | LINE display mode sets trace mode="lines"      | 🔴  | ✅     | PRD FR-9 §9.1              | All traces mode=="lines" when LINE selected                            |
+| 6K.7  | BPF checkbox triggers bandpass filter          | 🔴  | ✅     | PRD FR-9 §9.2              | Filtered signal has attenuation outside f ± BW/2                       |
+| 6K.8  | Gaussian noise added to combined when selected | 🔴  | ✅     | PRD FR-9 §9.1              | clean != noisy when noise=="Gaussian"                                  |
+| 6K.9  | FFT tab: peak matches active sinusoid f        | 🔴  | ✅     | PRD FR-12                  | argmax(magnitude) within 1 bin of f                                    |
+| 6K.10 | T-SNE tab: output shape (N, 3)                 | 🔴  | ✅     | PRD FR-10                  | TSNE result ndim==2 and shape[1]==3                                    |
+| 6K.11 | PCA tab: explained_variance_ratio_ sums ≤ 1    | 🔴  | ✅     | PRD FR-11                  | sum(explained_variance_ratio_[:3]) ≤ 1.0                               |
+| 6K.12 | SWEEP NOISE interval callback executes         | 🟡  | ✅     | PRD FR-9 §9.1              | Interval n_intervals increments → σ changes                            |
+| 6K.13 | Freq slider respects Nyquist maximum (Fs/2)    | 🔴  | ✅     | PRD FR-9 §9.2, PRD_sig §2  | Slider max updates dynamically when Fs changes                         |
 
 ---
 
@@ -548,3 +548,5 @@ A task is DONE only when **all** the following hold:
 | 1.20    | 2026-04-28 | Dev    | Added Phase 4F (UIService / Sinusoid Explorer) with 4F-1..4F-6 sub-tasks;   |
 |         |            |        | added Phase 6K (13 UIService unit tests); added Phase 8.14..8.17 UI audit   |
 |         |            |        | items; aligned with PRD v1.20 and PLAN v1.10 (FR-9..FR-13, ADR-6).          |
+
+

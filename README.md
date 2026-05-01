@@ -1,10 +1,3 @@
-# HW1 — Signal Frequency Extraction
+# HW1 — Signal Frequency Extraction using Neural Networks
 
 Signal frequency extraction using MLP, RNN, and LSTM neural networks.
-
-## Quick Start
-
-```bash
-uv sync
-uv run python src/main.py --mode all
-```
