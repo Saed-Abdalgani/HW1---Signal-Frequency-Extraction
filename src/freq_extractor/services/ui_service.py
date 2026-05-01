@@ -15,7 +15,6 @@ import logging
 from typing import Any
 
 import dash
-from dash import html
 
 from freq_extractor.services.ui_callbacks import register_callbacks
 from freq_extractor.services.ui_layout import build_layout

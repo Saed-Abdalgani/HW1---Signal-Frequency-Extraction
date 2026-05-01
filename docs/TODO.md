@@ -33,8 +33,8 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 | 1.6  | Create docs/PRD_training.md                   | 🔴  | ✅     | PRD FR-6           | Loss, optimizer, schedule, early stop, 7 TR-T* scenarios        |
 | 1.7  | Create docs/PROMPTS.md                        | 🟡  | ✅     | All                | All AI prompts logged with purpose, output, lessons             |
 | 1.8  | Decompose docs/TODO.md to ≥ 300 lines         | 🔴  | ✅     | All                | Atomic sub-tasks; cross-refs to PRD/PLAN                        |
-| 1.9  | Document gatekeeper extension points          | 🟡  | ⬜     | PLAN §11           | Extension matrix updated with HTTP-adapter scaffold notes       |
-| 1.10 | Add Bibliography section to PRD               | 🟢  | ⬜     | PRD §15            | Cite Hochreiter 1997, Adam paper, Nyquist                       |
+| 1.9  | Document gatekeeper extension points          | 🟡  | ✅     | PLAN §11           | Extension matrix updated with HTTP-adapter scaffold notes       |
+| 1.10 | Add Bibliography section to PRD               | 🟢  | ✅     | PRD §15            | Cite Hochreiter 1997, Adam paper, Nyquist                       |
 
 ---
 
@@ -49,10 +49,10 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 | 2.5  | Create config/rate_limits.json (v1.00)        | 🔴  | ✅     | PLAN §6            | default, file_io, checkpoint services defined                   |
 | 2.6  | Create config/logging_config.json (v1.00)     | 🔴  | ✅     | PLAN §8            | Console + file handlers; standard + detailed formatters         |
 | 2.7  | Create .env-example                           | 🔴  | ✅     | NFR-4              | Placeholders only; commented                                    |
-| 2.8  | Create .gitignore                             | 🔴  | ⬜     | NFR-4              | .env, *.key, *.pem, secrets.*, __pycache__, .venv/              |
+| 2.8  | Create .gitignore                             | 🔴  | ✅     | NFR-4              | .env, *.key, *.pem, secrets.*, __pycache__, .venv/              |
 | 2.9  | Create directory tree                         | 🔴  | ✅     | PLAN §1            | src/, tests/, docs/, data/, results/, assets/, notebooks/       |
-| 2.10 | Add LICENSE (MIT)                             | 🟡  | ⬜     | PRD §15            | MIT text with author + year                                     |
-| 2.11 | Add CITATION.cff (optional)                   | 🟢  | ⬜     | PRD §15            | Machine-readable citation                                       |
+| 2.10 | Add LICENSE (MIT)                             | 🟡  | ✅     | PRD §15            | MIT text with author + year                                     |
+| 2.11 | Add CITATION.cff (optional)                   | 🟢  | ✅     | PRD §15            | Machine-readable citation                                       |
 
 ---
 
@@ -204,9 +204,9 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 | #      | Task                                                       | Pri | Status | Refs                        | Definition of Done                                                    |
 |--------|------------------------------------------------------------|-----|--------|-----------------------------|-----------------------------------------------------------------------|
 | 4F-6.1 | Add `launch_ui(port)` method to UIService                  | 🔴  | ✅     | PRD FR-13                   | Calls `app.run(debug=False, port=port)`                               |
-| 4F-6.2 | Add `--mode ui` to SDK and main.py                         | 🔴  | ⬜     | PRD FR-13, FR-8             | Calls `sdk.launch_ui(port=args.port)`                                 |
-| 4F-6.3 | Add `--port` argument to main.py (default 8050)            | 🟡  | ⬜     | PRD FR-13                   | Argparse integer; passed through to UIService                         |
-| 4F-6.4 | Verify Dash app starts and responds on port 8050           | 🔴  | ⬜     | PRD FR-13                   | `uv run python src/main.py --mode ui` opens browser; 200 OK response  |
+| 4F-6.2 | Add `--mode ui` to SDK and main.py                         | 🔴  | ✅     | PRD FR-13, FR-8             | Calls `sdk.launch_ui(port=args.port)`                                 |
+| 4F-6.3 | Add `--port` argument to main.py (default 8050)            | 🟡  | ✅     | PRD FR-13                   | Argparse integer; passed through to UIService                         |
+| 4F-6.4 | Verify Dash app starts and responds on port 8050           | 🔴  | ✅     | PRD FR-13                   | `uv run python src/main.py --mode ui` opens browser; 200 OK response  |
 
 ---
 
@@ -422,23 +422,23 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Task                                          | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| 8.1   | uv lock                                       | 🔴  | ⬜     | UV-rules                   | uv.lock committed                                               |
-| 8.2   | uv sync clean                                 | 🔴  | ⬜     | UV-rules                   | Fresh sync exits 0                                              |
-| 8.3   | uv run ruff check . — 0 violations            | 🔴  | ⬜     | KPI                        | Ruff exit 0                                                     |
-| 8.4   | uv run pytest tests/ — all pass               | 🔴  | ⬜     | NFR-5                      | pytest exit 0                                                   |
-| 8.5   | uv run pytest tests/ --cov=src ≥ 85 %         | 🔴  | ⬜     | NFR-5                      | Coverage report ≥ 85                                            |
-| 8.6   | grep secrets — 0 hits                         | 🔴  | ⬜     | NFR-4                      | No keys/tokens                                                  |
-| 8.7   | Verify NO Python file > **145** code lines    | 🔴  | ⬜     | NFR-3 (v1.10)              | Counter script: 0 violations of new 145-line limit              |
-| 8.8   | Verify all external I/O via Gatekeeper        | 🔴  | ⬜     | ADR-4                      | grep open() outside gatekeeper.py: 0 hits                       |
-| 8.9   | Verify all business logic via SDK             | 🔴  | ⬜     | PLAN §1                    | main.py only calls sdk.* methods                                |
-| 8.10  | Verify .env not committed                     | 🔴  | ⬜     | NFR-4                      | .gitignore covers .env                                          |
-| 8.11  | Verify all PRDs / PLAN / TODO present         | 🔴  | ⬜     | PRD §15                    | All 7 docs/* files exist                                        |
-| 8.12  | Verify results/*.png present (≥150 dpi)       | 🔴  | ⬜     | PRD §15                    | 7 PNGs                                                          |
-| 8.13  | Produce final 32-row audit table              | 🔴  | ⬜     | All                        | All categories PASS                                             |
-| 8.14  | Verify `--mode ui` launches without error     | 🔴  | ⬜     | PRD FR-13                  | Subprocess test: exit code 0 after graceful interrupt           |
-| 8.15  | Verify ui_service*.py files ≤ 145 code lines  | 🔴  | ⬜     | NFR-3 (v1.10)              | All UI module files comply                                      |
-| 8.16  | Verify 4 Dash tabs present in app layout      | 🔴  | ⬜     | PRD FR-9..12               | SIGNALS, T-SNE 3D, PCA 3D, FFT SPECTRUM all in layout          |
-| 8.17  | Verify per-sinusoid controls (4 blocks)       | 🔴  | ⬜     | PRD FR-9 §9.2              | Sin 1..Sin 4 blocks rendered; MIX/BPF/f/φ/A controls present   |
+| 8.1   | uv lock                                       | 🔴  | ✅     | UV-rules                   | uv.lock committed                                               |
+| 8.2   | uv sync clean                                 | 🔴  | ✅     | UV-rules                   | Fresh sync exits 0                                              |
+| 8.3   | uv run ruff check . — 0 violations            | 🔴  | ✅     | KPI                        | Ruff exit 0                                                     |
+| 8.4   | uv run pytest tests/ — all pass               | 🔴  | ✅     | NFR-5                      | pytest exit 0                                                   |
+| 8.5   | uv run pytest tests/ --cov=src ≥ 85 %         | 🔴  | ✅     | NFR-5                      | Coverage report ≥ 85                                            |
+| 8.6   | grep secrets — 0 hits                         | 🔴  | ✅     | NFR-4                      | No keys/tokens                                                  |
+| 8.7   | Verify NO Python file > **145** code lines    | 🔴  | ✅     | NFR-3 (v1.10)              | Counter script: 0 violations of new 145-line limit              |
+| 8.8   | Verify all external I/O via Gatekeeper        | 🔴  | ✅     | ADR-4                      | grep open() outside gatekeeper.py: 0 hits                       |
+| 8.9   | Verify all business logic via SDK             | 🔴  | ✅     | PLAN §1                    | main.py only calls sdk.* methods                                |
+| 8.10  | Verify .env not committed                     | 🔴  | ✅     | NFR-4                      | .gitignore covers .env                                          |
+| 8.11  | Verify all PRDs / PLAN / TODO present         | 🔴  | ✅     | PRD §15                    | All 7 docs/* files exist                                        |
+| 8.12  | Verify results/*.png present (≥150 dpi)       | 🔴  | ✅     | PRD §15                    | 7 PNGs                                                          |
+| 8.13  | Produce final 32-row audit table              | 🔴  | ✅     | All                        | All categories PASS                                             |
+| 8.14  | Verify `--mode ui` launches without error     | 🔴  | ✅     | PRD FR-13                  | Subprocess test: exit code 0 after graceful interrupt           |
+| 8.15  | Verify ui_service*.py files ≤ 145 code lines  | 🔴  | ✅     | NFR-3 (v1.10)              | All UI module files comply                                      |
+| 8.16  | Verify 4 Dash tabs present in app layout      | 🔴  | ✅     | PRD FR-9..12               | SIGNALS, T-SNE 3D, PCA 3D, FFT SPECTRUM all in layout          |
+| 8.17  | Verify per-sinusoid controls (4 blocks)       | 🔴  | ✅     | PRD FR-9 §9.2              | Sin 1..Sin 4 blocks rendered; MIX/BPF/f/φ/A controls present   |
 
 ---
 
@@ -446,18 +446,18 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Edge Case                                     | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| EC.1  | Empty dataset list                            | 🔴  | ⬜     | PRD_sig §11                | Raises ValueError with clear message                            |
-| EC.2  | Single-frequency dataset                      | 🔴  | ⬜     | PRD_sig §11                | Splits succeed; one-hot still 4-dim                             |
-| EC.3  | Extreme noise σ=10.0                          | 🟡  | ⬜     | PRD_tr §10                 | Training does not diverge (NaN-free)                            |
-| EC.4  | window_size > total_samples                   | 🔴  | ⬜     | PRD_sig §11                | ValueError                                                      |
-| EC.5  | sampling_rate violates Nyquist                | 🔴  | ⬜     | PRD_sig §2                 | ValueError at startup                                           |
-| EC.6  | Negative frequency                            | 🔴  | ⬜     | PRD_sig §11                | ValueError                                                      |
-| EC.7  | Zero amplitude (signal = 0)                   | 🟡  | ⬜     | PRD_sig §11                | Allowed; produces zero target                                   |
-| EC.8  | Mismatched config_version on checkpoint load  | 🔴  | ⬜     | PLAN §5                    | ValueError; refuse to load                                      |
-| EC.9  | Disk full / permission denied during save     | 🔴  | ⬜     | ADR-4                      | Gatekeeper retries then raises GatekeeperError                  |
-| EC.10 | CUDA OOM on training start                    | 🟡  | ⬜     | PLAN §8                    | Falls back to CPU + logs warning                                |
-| EC.11 | Very small dataset (< batch_size)             | 🟡  | ⬜     | PRD FR-6                   | drop_last=False; partial batch handled                          |
-| EC.12 | All-zero noise vector                         | 🟢  | ⬜     | PRD_sig §11                | Tolerated (degenerate Gaussian)                                 |
+| EC.1  | Empty dataset list                            | 🔴  | ✅     | PRD_sig §11                | Raises ValueError with clear message                            |
+| EC.2  | Single-frequency dataset                      | 🔴  | ✅     | PRD_sig §11                | Splits succeed; one-hot still 4-dim                             |
+| EC.3  | Extreme noise σ=10.0                          | 🟡  | ✅     | PRD_tr §10                 | Training does not diverge (NaN-free)                            |
+| EC.4  | window_size > total_samples                   | 🔴  | ✅     | PRD_sig §11                | ValueError                                                      |
+| EC.5  | sampling_rate violates Nyquist                | 🔴  | ✅     | PRD_sig §2                 | ValueError at startup                                           |
+| EC.6  | Negative frequency                            | 🔴  | ✅     | PRD_sig §11                | ValueError                                                      |
+| EC.7  | Zero amplitude (signal = 0)                   | 🟡  | ✅     | PRD_sig §11                | Allowed; produces zero target                                   |
+| EC.8  | Mismatched config_version on checkpoint load  | 🔴  | ✅     | PLAN §5                    | ValueError; refuse to load                                      |
+| EC.9  | Disk full / permission denied during save     | 🔴  | ✅     | ADR-4                      | Gatekeeper retries then raises GatekeeperError                  |
+| EC.10 | CUDA OOM on training start                    | 🟡  | ✅     | PLAN §8                    | Falls back to CPU + logs warning                                |
+| EC.11 | Very small dataset (< batch_size)             | 🟡  | ✅     | PRD FR-6                   | drop_last=False; partial batch handled                          |
+| EC.12 | All-zero noise vector                         | 🟢  | ✅     | PRD_sig §11                | Tolerated (degenerate Gaussian)                                 |
 
 ---
 
@@ -465,20 +465,20 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Validation                                    | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| DV.1  | Schema check on setup.json keys               | 🔴  | ⬜     | PLAN §6                    | All required keys present; types match                          |
-| DV.2  | Schema check on rate_limits.json              | 🔴  | ⬜     | PLAN §6                    | Required keys + numeric ranges validated                        |
-| DV.3  | Schema check on logging_config.json           | 🔴  | ⬜     | PLAN §6                    | Required keys present; level ∈ {DEBUG..ERROR}                   |
-| DV.4  | Hyperparameter ranges validated               | 🔴  | ⬜     | PRD_tr §5                  | lr > 0; batch_size > 0; epochs > 0                              |
-| DV.5  | Frequency list non-empty + positive           | 🔴  | ⬜     | PRD_sig §3                 | len ≥ 1; all > 0                                                |
-| DV.6  | sampling_rate ≥ 2·max(frequencies)            | 🔴  | ⬜     | PRD_sig §2                 | Nyquist enforced at startup                                     |
-| DV.7  | Split ratios sum to 1.0 ± 1e-6                | 🔴  | ⬜     | PRD_sig §7                 | ValueError otherwise                                            |
-| DV.8  | window_size ≤ total_samples                   | 🔴  | ⬜     | PRD_sig §11                | ValueError otherwise                                            |
-| DV.9  | Tensor dtype = float32 throughout             | 🔴  | ⬜     | PLAN §5                    | Asserted in DataService                                         |
-| DV.10 | No NaN/Inf in generated dataset               | 🔴  | ⬜     | PRD_sig §11                | torch.isfinite(x).all()                                         |
-| DV.11 | Train/val/test disjoint by index              | 🔴  | ⬜     | PRD_sig §7                 | Index sets have empty intersection                              |
-| DV.12 | One-hot label sums == 1                       | 🔴  | ⬜     | PRD FR-2                   | Asserted on every batch                                         |
-| DV.13 | Normaliser stats finite + non-zero std        | 🔴  | ⬜     | PRD_sig §7                 | std > 1e-8                                                      |
-| DV.14 | Saved dataset round-trip equality             | 🟡  | ⬜     | PLAN §5                    | np.load(npz) equals original arrays                             |
+| DV.1  | Schema check on setup.json keys               | 🔴  | ✅     | PLAN §6                    | All required keys present; types match                          |
+| DV.2  | Schema check on rate_limits.json              | 🔴  | ✅     | PLAN §6                    | Required keys + numeric ranges validated                        |
+| DV.3  | Schema check on logging_config.json           | 🔴  | ✅     | PLAN §6                    | Required keys present; level ∈ {DEBUG..ERROR}                   |
+| DV.4  | Hyperparameter ranges validated               | 🔴  | ✅     | PRD_tr §5                  | lr > 0; batch_size > 0; epochs > 0                              |
+| DV.5  | Frequency list non-empty + positive           | 🔴  | ✅     | PRD_sig §3                 | len ≥ 1; all > 0                                                |
+| DV.6  | sampling_rate ≥ 2·max(frequencies)            | 🔴  | ✅     | PRD_sig §2                 | Nyquist enforced at startup                                     |
+| DV.7  | Split ratios sum to 1.0 ± 1e-6                | 🔴  | ✅     | PRD_sig §7                 | ValueError otherwise                                            |
+| DV.8  | window_size ≤ total_samples                   | 🔴  | ✅     | PRD_sig §11                | ValueError otherwise                                            |
+| DV.9  | Tensor dtype = float32 throughout             | 🔴  | ✅     | PLAN §5                    | Asserted in DataService                                         |
+| DV.10 | No NaN/Inf in generated dataset               | 🔴  | ✅     | PRD_sig §11                | torch.isfinite(x).all()                                         |
+| DV.11 | Train/val/test disjoint by index              | 🔴  | ✅     | PRD_sig §7                 | Index sets have empty intersection                              |
+| DV.12 | One-hot label sums == 1                       | 🔴  | ✅     | PRD FR-2                   | Asserted on every batch                                         |
+| DV.13 | Normaliser stats finite + non-zero std        | 🔴  | ✅     | PRD_sig §7                 | std > 1e-8                                                      |
+| DV.14 | Saved dataset round-trip equality             | 🟡  | ✅     | PLAN §5                    | np.load(npz) equals original arrays                             |
 
 ---
 
@@ -486,9 +486,9 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 
 | #     | Requirement                                   | Pri | Status | Refs                       | Definition of Done                                              |
 |-------|-----------------------------------------------|-----|--------|----------------------------|-----------------------------------------------------------------|
-| DOC.1 | All public functions have NumPy docstrings    | 🔴  | ⬜     | PRD_tr §13                 | Args/Returns/Raises documented                                  |
-| DOC.2 | All public classes have docstrings            | 🔴  | ⬜     | PRD §11                    | Purpose + attributes documented                                 |
-| DOC.3 | Type hints on every public signature          | 🔴  | ⬜     | NFR-2                      | mypy strict (or ruff TYPE) clean                                |
+| DOC.1 | All public functions have NumPy docstrings    | 🔴  | ✅     | PRD_tr §13                 | Args/Returns/Raises documented                                  |
+| DOC.2 | All public classes have docstrings            | 🔴  | ✅     | PRD §11                    | Purpose + attributes documented                                 |
+| DOC.3 | Type hints on every public signature          | 🔴  | ✅     | NFR-2                      | mypy strict (or ruff TYPE) clean                                |
 | DOC.4 | README contains all 21 sections (7B.1–7B.21)  | 🔴  | ✅     | Phase 7B                   | Cross-checked vs section list                                   |
 | DOC.5 | All figures captioned + referenced in README  | 🔴  | ✅     | PRD_tr §11                 | Each PNG appears in body with caption                           |
 | DOC.6 | Hyperparameter table with rationale           | 🔴  | ✅     | PRD_tr §5                  | Every choice justified                                          |
@@ -496,9 +496,9 @@ enforced by NFR-3 and audit task 8.7. Tests files obey the same limit.
 | DOC.8 | Learning-rate + schedule rationale            | 🔴  | ✅     | PRD_tr §5                  | Why 1e-3 + ReduceLROnPlateau                                    |
 | DOC.9 | Batch-size rationale                          | 🔴  | ✅     | PRD_tr §5                  | Why 32 (memory + variance trade-off)                            |
 | DOC.10| Best-model justification w/ theory            | 🔴  | ✅     | PRD goal 4                 | Theoretical + empirical evidence                                |
-| DOC.11| Limitations + future work                     | 🟡  | ⬜     | PRD §15                    | Honest assessment included                                      |
-| DOC.12| ADR list inlined or linked                    | 🟡  | ⬜     | PLAN §9                    | All architectural decisions recorded                            |
-| DOC.13| docs/PROMPTS.md kept current                  | 🟡  | ⬜     | PRD §15                    | Records all prompts used                                        |
+| DOC.11| Limitations + future work                     | 🟡  | ✅     | PRD §15                    | Honest assessment included                                      |
+| DOC.12| ADR list inlined or linked                    | 🟡  | ✅     | PLAN §9                    | All architectural decisions recorded                            |
+| DOC.13| docs/PROMPTS.md kept current                  | 🟡  | ✅     | PRD §15                    | Records all prompts used                                        |
 
 ---
 

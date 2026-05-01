@@ -128,3 +128,25 @@ assert abs(dominant_freq - expected_freq) < 0.5  # within 0.5 Hz
 6. **Gatekeeper pattern**: Even for file I/O, centralizing operations enables consistent logging.
 7. **Tanh for regression on bounded signals**: ReLU can produce unbounded outputs; Tanh is safer.
 8. **Gradient clipping**: Always clip gradients in RNN/LSTM training to prevent divergence.
+
+---
+
+## Prompt 5 — UI Refinement and Final Validation
+
+**Tool:** Codex
+**Date:** 2026-05-01
+**Context:** Completing the Sinusoid Explorer UI, Phase 8 audit tasks, edge cases, and data validation rows.
+
+**Prompt Summary:**
+The user requested that the local Dash app run at `127.0.0.1:8765`, that the Sin 1-4 controls be restored to the left dashboard rail, that each sinusoid slider/handle use its assigned color, and that remaining TODO sections be executed and marked done only after verification.
+
+**Resolution:**
+- Updated UI layout and CSS so the sidebar remains on the left and Sin 1-4 controls use cyan/red/green/yellow styling.
+- Added defensive validation for empty datasets, config schema/ranges, CUDA OOM fallback, and dataset integrity.
+- Added regression tests for edge cases, data validation, documentation quality, and UI structure.
+- Updated `docs/TODO.md` after focused tests, full pytest coverage, Ruff, and line-count checks passed.
+
+**Lessons Learned:**
+- Browser-facing UI work needs both unit tests and visual/manual startup checks.
+- TODO rows are only useful when tied to executable checks or concrete documents.
+- Gatekeeper audits need a clear bootstrap boundary for config-file reads.

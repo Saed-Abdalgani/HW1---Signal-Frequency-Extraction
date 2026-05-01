@@ -78,6 +78,13 @@ class TestSignalGeneratorNoisy:
         expected = sigma * gen.amplitude
         assert abs(noise_std - expected) / expected < 0.15
 
+    def test_all_zero_noise_vector_tolerated(self, signal_gen: SignalGenerator, rng) -> None:
+        """EC.12: Degenerate zero-noise Gaussian returns finite clean samples."""
+        clean = signal_gen.generate_clean(15.0)
+        noisy = signal_gen.generate_noisy(clean, 0.0, rng)
+        np.testing.assert_array_equal(noisy, clean)
+        assert np.isfinite(noisy).all()
+
 
 class TestSignalGeneratorValidation:
     """Input validation edge cases."""
@@ -113,3 +120,11 @@ class TestSignalGeneratorValidation:
         """SG-EC6: Negative frequency raises ValueError."""
         with pytest.raises(ValueError, match="Frequency"):
             signal_gen.generate_clean(-5.0)
+
+    def test_zero_amplitude_allowed(self, rng) -> None:
+        """EC.7: Zero amplitude is allowed and produces zero targets."""
+        gen = SignalGenerator(sampling_rate=200, duration=1.0, amplitude=0.0)
+        clean = gen.generate_clean(15.0)
+        noisy = gen.generate_noisy(clean, 10.0, rng)
+        assert np.all(clean == 0.0)
+        assert np.all(noisy == 0.0)

@@ -6,8 +6,8 @@ Tanh activation presence, input validation, and serialisation.
 
 from __future__ import annotations
 
-import torch
 import pytest
+import torch
 from torch import nn
 
 from freq_extractor.services.mlp_model import MLPModel

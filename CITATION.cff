@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite it using the metadata below."
+title: "Signal Frequency Extraction using Neural Networks"
+type: software
+authors:
+  - family-names: Abdalgani
+    given-names: Saed
+year: 2026
+repository-code: "https://github.com/Saed-Abdalgani/HW1---Signal-Frequency-Extraction"
+license: MIT
+keywords:
+  - signal-processing
+  - neural-networks
+  - pytorch
+  - sinusoid-frequency-extraction

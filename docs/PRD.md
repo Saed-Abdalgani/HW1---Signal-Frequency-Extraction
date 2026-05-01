@@ -269,3 +269,12 @@ Displays computed metrics dynamically: **Fs** (Hz), **N-CYC**, **T** (total dura
 4. Passing test suite with ≥ 85 % coverage.
 5. Zero Ruff violations.
 6. Sinusoid Explorer dashboard accessible via `uv run python src/main.py --mode ui`.
+
+---
+
+## 16. Bibliography
+
+1. Hochreiter, S., & Schmidhuber, J. (1997). Long Short-Term Memory. Neural Computation, 9(8), 1735-1780.
+2. Kingma, D. P., & Ba, J. (2015). Adam: A Method for Stochastic Optimization. International Conference on Learning Representations.
+3. Shannon, C. E. (1949). Communication in the Presence of Noise. Proceedings of the IRE, 37(1), 10-21.
+4. Nyquist, H. (1928). Certain Topics in Telegraph Transmission Theory. Transactions of the American Institute of Electrical Engineers, 47(2), 617-644.

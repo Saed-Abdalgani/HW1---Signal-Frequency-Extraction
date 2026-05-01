@@ -58,7 +58,7 @@ class TestPerFrequencyMSE:
         model = MLPModel(window_size=10, hidden_sizes=[16, 32, 16])
         result = compute_per_frequency_mse(model, small_entries, "mlp", sample_config)
         assert len(result) == 4
-        for freq, mse in result.items():
+        for _freq, mse in result.items():
             assert mse >= 0
 
 

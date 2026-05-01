@@ -9,11 +9,16 @@ service modules for data generation, training, evaluation, and the
 interactive dashboard.
 """
 from __future__ import annotations
+
 import logging
 from typing import Any
+
+import torch
 from torch import nn
+
 from freq_extractor.constants import SPLIT_NAMES
 from freq_extractor.sdk.sdk_base import FreqExtractorSDKBase
+
 logger = logging.getLogger("freq_extractor.sdk")
 
 class FreqExtractorSDK(FreqExtractorSDKBase):
@@ -78,15 +83,28 @@ class FreqExtractorSDK(FreqExtractorSDKBase):
         from freq_extractor.services.training_helpers import set_all_seeds
         from freq_extractor.services.training_service import train as _train
 
-        set_all_seeds(self.seed)
-        model = ModelFactory.create_model(model_type, self.config).to(self.device)
-
         ds_cls = MLPDataset if model_type == "mlp" else SequentialDataset
         bs = self.config["training"]["batch_size"]
-        train_loader = create_dataloader(ds_cls(train_entries), bs, shuffle=True, seed=self.seed)
-        val_loader = create_dataloader(ds_cls(val_entries), bs, shuffle=False, seed=self.seed)
 
-        history = _train(model, train_loader, val_loader, self.config, model_type)
+        def run_on(device: torch.device) -> tuple[nn.Module, dict[str, Any]]:
+            set_all_seeds(self.seed)
+            model = ModelFactory.create_model(model_type, self.config).to(device)
+            train_loader = create_dataloader(ds_cls(train_entries), bs, shuffle=True,
+                                             seed=self.seed)
+            val_loader = create_dataloader(ds_cls(val_entries), bs, shuffle=False,
+                                           seed=self.seed)
+            return model, _train(model, train_loader, val_loader, self.config, model_type)
+
+        try:
+            model, history = run_on(self.device)
+        except RuntimeError as exc:
+            if self.device.type != "cuda" or "out of memory" not in str(exc).lower():
+                raise
+            logger.warning("CUDA OOM during %s training; retrying on CPU.",
+                           model_type.upper())
+            torch.cuda.empty_cache()
+            self._device = torch.device("cpu")
+            model, history = run_on(self.device)
         logger.info("[%s] Training complete — best_val_mse=%.6f", model_type.upper(),
                     history["best_val_mse"])
         return model, history

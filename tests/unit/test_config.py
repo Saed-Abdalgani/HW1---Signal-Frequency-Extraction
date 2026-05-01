@@ -68,3 +68,62 @@ class TestLoadJson:
         """get_setup validates config version."""
         cfg = get_setup()
         assert "signal" in cfg
+
+    def test_setup_schema_and_ranges(self, tmp_config_dir) -> None:
+        """DV.1, DV.4-DV.6: setup schema and critical ranges validate."""
+        cfg = get_setup()
+        assert cfg["training"]["learning_rate"] > 0
+        assert cfg["training"]["batch_size"] > 0
+        assert cfg["training"]["max_epochs"] > 0
+        assert min(cfg["signal"]["frequencies_hz"]) > 0
+        assert cfg["signal"]["sampling_rate_hz"] >= 2 * max(cfg["signal"]["frequencies_hz"])
+
+    def test_invalid_training_range_raises(self, tmp_config_dir) -> None:
+        """DV.4: Bad hyperparameter ranges fail fast."""
+        path = tmp_config_dir / "setup.json"
+        cfg = json.loads(path.read_text())
+        cfg["training"]["batch_size"] = 0
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="batch_size"):
+            get_setup()
+
+    def test_invalid_frequency_list_raises(self, tmp_config_dir) -> None:
+        """DV.5: Empty or non-positive frequencies fail fast."""
+        path = tmp_config_dir / "setup.json"
+        cfg = json.loads(path.read_text())
+        cfg["signal"]["frequencies_hz"] = [5, -1]
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="frequencies_hz"):
+            get_setup()
+
+    def test_invalid_nyquist_raises(self, tmp_config_dir) -> None:
+        """DV.6: sampling_rate must satisfy Nyquist at startup."""
+        path = tmp_config_dir / "setup.json"
+        cfg = json.loads(path.read_text())
+        cfg["signal"]["sampling_rate_hz"] = 50
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="Nyquist"):
+            get_setup()
+
+    def test_invalid_rate_limits_raise(self, tmp_config_dir) -> None:
+        """DV.2: rate limit schema validates required numeric ranges."""
+        path = tmp_config_dir / "rate_limits.json"
+        cfg = json.loads(path.read_text())
+        cfg["rate_limits"]["services"]["default"]["requests_per_minute"] = 0
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="requests_per_minute"):
+            get_rate_limits()
+
+    def test_invalid_logging_level_raises(self, tmp_config_dir) -> None:
+        """DV.3: logging levels must be standard Python logging levels."""
+        path = tmp_config_dir / "logging_config.json"
+        cfg = json.loads(path.read_text())
+        cfg["logging"]["handlers"]["console"]["level"] = "NOPE"
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="level"):
+            get_logging_config()

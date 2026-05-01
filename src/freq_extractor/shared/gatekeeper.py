@@ -14,14 +14,22 @@ import queue
 import time
 from collections import deque
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
-
-from freq_extractor.shared.config import get_rate_limits
 
 logger = logging.getLogger("freq_extractor.gatekeeper")
 
 class GatekeeperError(Exception):
     """Raised when the gatekeeper cannot execute a call after all retries."""
+
+def read_text(path: Path) -> str:
+    """Read text from *path* inside the gatekeeper I/O boundary.
+
+    Config loading uses this low-level bootstrap helper before service-specific
+    rate-limit configuration is available.
+    """
+    with path.open(encoding="utf-8") as fh:
+        return fh.read()
 
 class ApiGatekeeper:
     """Centralized I/O and API call manager.
@@ -35,6 +43,8 @@ class ApiGatekeeper:
 
     def __init__(self, service_name: str = "default") -> None:
         """Initialise gatekeeper with rate-limit config for *service_name*."""
+        from freq_extractor.shared.config import get_rate_limits
+
         limits = get_rate_limits()["services"]
         cfg = limits.get(service_name, limits["default"])
 

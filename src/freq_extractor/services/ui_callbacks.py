@@ -22,7 +22,7 @@ from freq_extractor.services.ui_layout import SIN_COLOURS
 
 _DARK_LAYOUT = {
     "paper_bgcolor": "#060b10", "plot_bgcolor": "#0d131a",
-    "font": {"color": "#8b949e", "family": "Inter"}, 
+    "font": {"color": "#8b949e", "family": "Inter"},
     "margin": {"l": 40, "r": 20, "t": 40, "b": 40},
     "xaxis": {"gridcolor": "#1e2632", "zerolinecolor": "#1e2632"},
     "yaxis": {"gridcolor": "#1e2632", "zerolinecolor": "#1e2632"},
@@ -96,26 +96,26 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
         n_cyc = n_cyc or 2
         mode = "markers" if display == "DOTS" else "lines"
         rng = np.random.default_rng(0)
-        
-        ind_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "① Individual Sinusoids (combined channels)", "font": {"color": "#3fb950"}}})
+
+        ind_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "Individual Sinusoids", "font": {"color": "#3fb950"}}})
         combined = None
         t_ref = None
-        
+
         for i in range(4):
             mix, bpf_v, freq, phase, amp, sigma = sin_vals[i * 6:(i + 1) * 6]
             if not freq or freq <= 0:
                 continue
             t, sig = _gen_signal(fs, n_cyc, freq, phase or 0, amp or 1)
-            
+
             if sigma and sigma > 0:
                 sig = sig + rng.normal(0, sigma, size=sig.shape)
-                
+
             if bpf_v and "bpf" in bpf_v:
                 sig = _apply_bpf(sig, freq, bw or 5, fs)
-                
+
             ind_fig.add_trace(go.Scatter(x=t, y=sig, mode=mode,
                 name=f"Sin {i + 1} pure", line={"color": SIN_COLOURS[i]}))
-                
+
             if mix and "mix" in mix:
                 if combined is None:
                     combined = np.zeros_like(sig)
@@ -124,13 +124,13 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
                     ml = min(len(sig), len(combined))
                     sig, combined, t_ref = sig[:ml], combined[:ml], t_ref[:ml]
                 combined += sig
-                
-        comb_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "② Combined Signal - Clean", "font": {"color": "#3fb950"}}})
+
+        comb_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "Combined Signal", "font": {"color": "#3fb950"}}})
         if combined is not None:
             combined = _add_noise(combined, noise_type or "None", rng)
             comb_fig.add_trace(go.Scatter(x=t_ref, y=combined, mode=mode,
                 name="Mixed clean", line={"color": "#f0f6fc"}))
-                
+
         ind_fig.update_layout(xaxis_title="t (s)")
         comb_fig.update_layout(xaxis_title="t (s)")
         return ind_fig, comb_fig

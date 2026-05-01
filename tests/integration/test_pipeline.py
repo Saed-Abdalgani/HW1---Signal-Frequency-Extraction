@@ -6,17 +6,13 @@ for all model types using a minimal dataset.
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import torch
-from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from freq_extractor.services.data_pipeline import build_full_dataset
-from freq_extractor.services.datasets import MLPDataset, SequentialDataset, create_dataloader
-from freq_extractor.services.evaluation_service import build_comparison_table, compute_split_mse
+from freq_extractor.sdk.sdk import FreqExtractorSDK
+from freq_extractor.services.evaluation_service import build_comparison_table
 from freq_extractor.services.model_factory import ModelFactory
-from freq_extractor.services.training_service import evaluate, train
+from freq_extractor.services.training_service import train
 
 
 class TestEndToEnd:
@@ -27,31 +23,26 @@ class TestEndToEnd:
         sample_config["training"]["max_epochs"] = 3
         sample_config["training"]["early_stop_patience"] = 2
         sample_config["training"]["checkpoint_dir"] = str(tmp_path / "ckpts")
-        train_e, val_e, test_e = build_full_dataset(sample_config, seed=42)
-        model = ModelFactory.create_model("mlp", sample_config)
-        train_ds = MLPDataset(train_e)
-        val_ds = MLPDataset(val_e)
-        test_ds = MLPDataset(test_e)
-        bs = sample_config["training"]["batch_size"]
-        t_loader = create_dataloader(train_ds, batch_size=bs, shuffle=True)
-        v_loader = create_dataloader(val_ds, batch_size=bs, shuffle=False)
-        te_loader = create_dataloader(test_ds, batch_size=bs, shuffle=False)
-        history = train(model, t_loader, v_loader, sample_config, model_type="mlp")
+
+        sdk = FreqExtractorSDK()
+        train_e, val_e, test_e = sdk.generate_data()
+
+        model, history = sdk.train("mlp", train_e, val_e)
         assert len(history["train_losses"]) > 0
-        test_mse = evaluate(model, te_loader, nn.MSELoss())
-        assert test_mse >= 0
+
+        metrics = sdk.evaluate(model, "mlp", train_e, val_e, test_e)
+        assert metrics["test"] >= 0
 
     def test_rnn_pipeline(self, sample_config, tmp_path, tmp_config_dir) -> None:
         """6I.1: RNN end-to-end pipeline."""
         sample_config["training"]["max_epochs"] = 3
         sample_config["training"]["early_stop_patience"] = 2
         sample_config["training"]["checkpoint_dir"] = str(tmp_path / "ckpts")
-        train_e, val_e, _ = build_full_dataset(sample_config, seed=42)
-        model = ModelFactory.create_model("rnn", sample_config)
-        bs = sample_config["training"]["batch_size"]
-        t_loader = create_dataloader(SequentialDataset(train_e), batch_size=bs)
-        v_loader = create_dataloader(SequentialDataset(val_e), batch_size=bs, shuffle=False)
-        history = train(model, t_loader, v_loader, sample_config, model_type="rnn")
+
+        sdk = FreqExtractorSDK()
+        train_e, val_e, _ = sdk.generate_data()
+
+        model, history = sdk.train("rnn", train_e, val_e)
         assert history["best_val_mse"] >= 0
 
     def test_comparison_table(self) -> None:
@@ -84,3 +75,15 @@ class TestEndToEnd:
         train(model, train_loader, val_loader, sample_config, model_type="mlp")
         ckpt_files = list(ckpt_dir.glob("*.pt"))
         assert len(ckpt_files) >= 1
+
+    def test_sdk_run_all(self, sample_config, tmp_path, tmp_config_dir) -> None:
+        """Test full pipeline using sdk.run_all()."""
+        sample_config["training"]["max_epochs"] = 1
+        sample_config["training"]["early_stop_patience"] = 1
+        sample_config["training"]["checkpoint_dir"] = str(tmp_path / "ckpts")
+        sample_config["signal"]["duration_s"] = 0.5
+
+        sdk = FreqExtractorSDK()
+        results = sdk.run_all()
+        assert "models" in results
+        assert "metrics" in results

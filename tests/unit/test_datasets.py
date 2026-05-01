@@ -88,3 +88,11 @@ class TestDataLoader:
         x1, _ = next(iter(l1))
         x2, _ = next(iter(l2))
         torch.testing.assert_close(x1, x2)
+
+    def test_partial_batch_for_small_dataset(self, small_entries) -> None:
+        """EC.11: Dataset smaller than batch_size yields a partial batch."""
+        ds = MLPDataset(small_entries[:3])
+        loader = create_dataloader(ds, batch_size=64, shuffle=False, seed=42)
+        batch_x, batch_y = next(iter(loader))
+        assert batch_x.shape[0] == 3
+        assert batch_y.shape[0] == 3

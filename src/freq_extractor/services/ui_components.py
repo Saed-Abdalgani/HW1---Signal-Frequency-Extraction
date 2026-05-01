@@ -26,48 +26,47 @@ def header_metrics() -> list:
 
 def global_controls(config: dict[str, Any]) -> html.Div:
     """Build the Global Parameters sidebar panel."""
-    sig = config.get("signal", {})
     return html.Div([
         html.H4("GLOBAL PARAMETERS", className="sidebar-section-title"),
-        
+
         html.Div([
-            html.Label("Fs", className="slider-label"), 
+            html.Label("Fs", className="slider-label"),
             html.Div(dcc.Slider(id="fs-slider", min=10, max=2000, step=10,
                 value=100, marks=None, tooltip={"placement": "right", "always_visible": True}), className="slider-container"),
         ], className="slider-row"),
-            
+
         html.Div([
-            html.Label("N-cycles", className="slider-label"), 
+            html.Label("N-cycles", className="slider-label"),
             html.Div(dcc.Input(id="n-cycles", type="number", value=1, min=1, max=20, className="styled-input"), className="slider-container"),
         ], className="slider-row"),
-            
+
         html.Div([
-            html.Label("BW", className="slider-label"), 
+            html.Label("BW", className="slider-label"),
             html.Div(dcc.Slider(id="bw-slider", min=0.1, max=100, step=0.1,
                 value=1.0, marks=None, tooltip={"placement": "right", "always_visible": True}), className="slider-container"),
         ], className="slider-row"),
-            
+
         html.Div([
-            html.Label("Display", className="slider-label"), 
+            html.Label("Display", className="slider-label"),
             dcc.RadioItems(id="display-toggle",
                 options=[{"label": "LINE", "value": "LINE"}, {"label": "DOTS", "value": "DOTS"}],
                 value="DOTS", inline=True, className="segmented-control"),
         ], className="slider-row"),
-            
+
         html.Div([
-            html.Label("Noise", className="slider-label"), 
+            html.Label("Noise", className="slider-label"),
             dcc.Dropdown(id="noise-dropdown",
                 options=[{"label": n, "value": n} for n in ["None", "Gaussian", "Uniform"]],
                 value="Gaussian", clearable=False, className="custom-dropdown"),
         ], className="slider-row"),
-            
+
         html.Div([
-            html.Label("Filter", className="slider-label"), 
+            html.Label("Filter", className="slider-label"),
             dcc.Dropdown(id="filter-dropdown",
                 options=[{"label": f, "value": f} for f in ["None", "Lowpass", "Highpass", "Bandpass"]],
                 value="Bandpass", clearable=False, className="custom-dropdown"),
         ], className="slider-row"),
-            
+
         html.Button("► SWEEP NOISE", id="sweep-btn", className="sweep-btn"),
         dcc.Interval(id="sweep-interval", interval=100, disabled=True, n_intervals=0),
     ], className="control-block")
@@ -86,24 +85,24 @@ def _sin_control(n: int) -> html.Div:
             dcc.Checklist(id=f"bpf-{n}", options=[{"label": "BPF", "value": "bpf"}],
                 value=[] if n != 1 else ["bpf"], inline=True, className="sin-checkbox"),
         ], className="sin-header"),
-        
+
         html.Div([
-            html.Label("f", className="slider-label"), 
+            html.Label("f", className="slider-label"),
             html.Div(dcc.Slider(id=f"freq-{n}", min=0.1, max=100, step=0.1, value=freqs[n - 1], marks=None, tooltip={"placement": "right", "always_visible": True}), className="slider-container"),
         ], className="slider-row"),
-            
+
         html.Div([
-            html.Label("φ", className="slider-label"), 
+            html.Label("φ", className="slider-label"),
             html.Div(dcc.Slider(id=f"phase-{n}", min=0, max=6.28, step=0.01, value=0.0 if n==1 else 0.93 if n==2 else 0, marks=None, tooltip={"placement": "right", "always_visible": True}), className="slider-container"),
         ], className="slider-row"),
-            
+
         html.Div([
-            html.Label("A", className="slider-label"), 
+            html.Label("A", className="slider-label"),
             html.Div(dcc.Slider(id=f"amp-{n}", min=0, max=2.0, step=0.01, value=0.1 if n==1 else 0.8 if n==2 else 0.6, marks=None, tooltip={"placement": "right", "always_visible": True}), className="slider-container"),
         ], className="slider-row"),
 
         html.Div([
-            html.Label("σ", className="slider-label"), 
+            html.Label("σ", className="slider-label"),
             html.Div(dcc.Slider(id=f"sigma-{n}", min=0, max=1.0, step=0.01, value=0.0, marks=None, tooltip={"placement": "right", "always_visible": True}), className="slider-container"),
         ], className="slider-row"),
     ], className=f"control-block sin-block-{n}")

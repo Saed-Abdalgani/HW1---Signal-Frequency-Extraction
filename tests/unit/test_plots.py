@@ -5,8 +5,6 @@ Validates that plots save to disk without errors.
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from freq_extractor.services.plot_analysis import (
     plot_noise_robustness,
     plot_per_frequency_mse,

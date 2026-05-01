@@ -191,24 +191,92 @@ body .rc-slider-tooltip-arrow {
   display: none !important;
 }
 
-/* Coloring specific Sinusoid blocks with unbeatable ID specificity */
-#freq-1 .rc-slider-track, #phase-1 .rc-slider-track, #amp-1 .rc-slider-track, #sigma-1 .rc-slider-track { background-color: #00d2ff !important; }
-#freq-1 .rc-slider-handle, #phase-1 .rc-slider-handle, #amp-1 .rc-slider-handle, #sigma-1 .rc-slider-handle { border-color: #00d2ff !important; }
+/* Per-sinusoid controls */
+body .sin-block-1 .rc-slider-track, body .sin-block-1 .rc-slider-track-1 { background-color: #00d2ff !important; }
+body .sin-block-1 .dash-slider-range { background-color: #00d2ff !important; }
+body .sin-block-1 .rc-slider-handle, body .sin-block-1 .rc-slider-handle-1 {
+  border-color: #00d2ff !important;
+  background-color: #00d2ff !important;
+}
+body .sin-block-1 .dash-slider-thumb {
+  border-color: #00d2ff !important;
+  background-color: #00d2ff !important;
+}
+body .sin-block-1 .rc-slider-tooltip-inner {
+  border-color: #00d2ff !important;
+  color: #00d2ff !important;
+}
+body .sin-block-1 .dash-slider-tooltip,
+body .sin-block-1 .dash-input-container {
+  border-color: #00d2ff !important;
+  color: #00d2ff !important;
+}
 body .sin-block-1 .sin-checkbox input { accent-color: #00d2ff !important; }
 body .sin-block-1 .sin-checkbox label { color: #00d2ff !important; }
 
-#freq-2 .rc-slider-track, #phase-2 .rc-slider-track, #amp-2 .rc-slider-track, #sigma-2 .rc-slider-track { background-color: #ff6b6b !important; }
-#freq-2 .rc-slider-handle, #phase-2 .rc-slider-handle, #amp-2 .rc-slider-handle, #sigma-2 .rc-slider-handle { border-color: #ff6b6b !important; }
+body .sin-block-2 .rc-slider-track, body .sin-block-2 .rc-slider-track-1 { background-color: #ff6b6b !important; }
+body .sin-block-2 .dash-slider-range { background-color: #ff6b6b !important; }
+body .sin-block-2 .rc-slider-handle, body .sin-block-2 .rc-slider-handle-1 {
+  border-color: #ff6b6b !important;
+  background-color: #ff6b6b !important;
+}
+body .sin-block-2 .dash-slider-thumb {
+  border-color: #ff6b6b !important;
+  background-color: #ff6b6b !important;
+}
+body .sin-block-2 .rc-slider-tooltip-inner {
+  border-color: #ff6b6b !important;
+  color: #ff6b6b !important;
+}
+body .sin-block-2 .dash-slider-tooltip,
+body .sin-block-2 .dash-input-container {
+  border-color: #ff6b6b !important;
+  color: #ff6b6b !important;
+}
 body .sin-block-2 .sin-checkbox input { accent-color: #ff6b6b !important; }
 body .sin-block-2 .sin-checkbox label { color: #ff6b6b !important; }
 
-#freq-3 .rc-slider-track, #phase-3 .rc-slider-track, #amp-3 .rc-slider-track, #sigma-3 .rc-slider-track { background-color: #51cf66 !important; }
-#freq-3 .rc-slider-handle, #phase-3 .rc-slider-handle, #amp-3 .rc-slider-handle, #sigma-3 .rc-slider-handle { border-color: #51cf66 !important; }
+body .sin-block-3 .rc-slider-track, body .sin-block-3 .rc-slider-track-1 { background-color: #51cf66 !important; }
+body .sin-block-3 .dash-slider-range { background-color: #51cf66 !important; }
+body .sin-block-3 .rc-slider-handle, body .sin-block-3 .rc-slider-handle-1 {
+  border-color: #51cf66 !important;
+  background-color: #51cf66 !important;
+}
+body .sin-block-3 .dash-slider-thumb {
+  border-color: #51cf66 !important;
+  background-color: #51cf66 !important;
+}
+body .sin-block-3 .rc-slider-tooltip-inner {
+  border-color: #51cf66 !important;
+  color: #51cf66 !important;
+}
+body .sin-block-3 .dash-slider-tooltip,
+body .sin-block-3 .dash-input-container {
+  border-color: #51cf66 !important;
+  color: #51cf66 !important;
+}
 body .sin-block-3 .sin-checkbox input { accent-color: #51cf66 !important; }
 body .sin-block-3 .sin-checkbox label { color: #51cf66 !important; }
 
-#freq-4 .rc-slider-track, #phase-4 .rc-slider-track, #amp-4 .rc-slider-track, #sigma-4 .rc-slider-track { background-color: #ffd43b !important; }
-#freq-4 .rc-slider-handle, #phase-4 .rc-slider-handle, #amp-4 .rc-slider-handle, #sigma-4 .rc-slider-handle { border-color: #ffd43b !important; }
+body .sin-block-4 .rc-slider-track, body .sin-block-4 .rc-slider-track-1 { background-color: #ffd43b !important; }
+body .sin-block-4 .dash-slider-range { background-color: #ffd43b !important; }
+body .sin-block-4 .rc-slider-handle, body .sin-block-4 .rc-slider-handle-1 {
+  border-color: #ffd43b !important;
+  background-color: #ffd43b !important;
+}
+body .sin-block-4 .dash-slider-thumb {
+  border-color: #ffd43b !important;
+  background-color: #ffd43b !important;
+}
+body .sin-block-4 .rc-slider-tooltip-inner {
+  border-color: #ffd43b !important;
+  color: #ffd43b !important;
+}
+body .sin-block-4 .dash-slider-tooltip,
+body .sin-block-4 .dash-input-container {
+  border-color: #ffd43b !important;
+  color: #ffd43b !important;
+}
 body .sin-block-4 .sin-checkbox input { accent-color: #ffd43b !important; }
 body .sin-block-4 .sin-checkbox label { color: #ffd43b !important; }
 
@@ -333,6 +401,7 @@ body .custom-dropdown .Select-option:hover {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .custom-tabs-container {
@@ -366,3 +435,43 @@ body .custom-dropdown .Select-option:hover {
   gap: 16px;
 }
 
+@media (max-width: 900px) {
+  .dashboard-container {
+    height: auto;
+    min-height: 100vh;
+    padding: 12px;
+  }
+
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .metrics-bar {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .main-grid {
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+
+  .sidebar {
+    flex: 0 0 240px;
+    width: 240px;
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  .main-content {
+    min-width: 300px;
+  }
+
+  .modebar-container {
+    display: none !important;
+  }
+}

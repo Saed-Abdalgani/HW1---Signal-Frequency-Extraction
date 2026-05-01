@@ -41,6 +41,9 @@ class DatasetSplitter:
         tuple[list, list, list]
             ``(train, val, test)`` subsets.
         """
+        if not entries:
+            raise ValueError("entries must not be empty")
+
         total = train_ratio + val_ratio + test_ratio
         if abs(total - 1.0) > 1e-6:
             raise ValueError(f"Split ratios must sum to 1.0, got {total}")
@@ -81,6 +84,8 @@ class DataNormalizer:
 
     def fit(self, entries: list[dict[str, np.ndarray]]) -> None:
         """Compute mean and std from training noisy samples."""
+        if not entries:
+            raise ValueError("entries must not be empty")
         all_vals = np.concatenate([e["noisy_samples"] for e in entries])
         self.mean = float(np.mean(all_vals))
         self.std = float(np.std(all_vals))

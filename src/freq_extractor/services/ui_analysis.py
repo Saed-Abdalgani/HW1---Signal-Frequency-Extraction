@@ -3,6 +3,7 @@ Separated from ``ui_callbacks.py`` to comply with ≤ 145 code-line limit.
 """
 
 from __future__ import annotations
+
 from typing import Any
 
 import numpy as np

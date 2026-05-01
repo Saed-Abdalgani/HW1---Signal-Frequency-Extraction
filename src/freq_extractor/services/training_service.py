@@ -28,6 +28,11 @@ logger = logging.getLogger("freq_extractor.training")
 __all__ = ["EarlyStopping", "set_all_seeds", "train_one_epoch", "evaluate", "train"]
 
 
+def _module_device(model: nn.Module) -> torch.device:
+    """Return the device used by the model parameters."""
+    return next(model.parameters(), torch.empty(0)).device
+
+
 def train_one_epoch(
     model: nn.Module,
     loader: DataLoader,
@@ -43,9 +48,12 @@ def train_one_epoch(
         Mean training loss for the epoch.
     """
     model.train()
+    device = _module_device(model)
     total_loss = 0.0
     n_batches = 0
     for x_batch, y_batch in loader:
+        x_batch = x_batch.to(device)
+        y_batch = y_batch.to(device)
         optimizer.zero_grad()
         pred = model(x_batch)
         loss = criterion(pred, y_batch)
@@ -72,10 +80,13 @@ def evaluate(
         Mean loss over all batches.
     """
     model.eval()
+    device = _module_device(model)
     total_loss = 0.0
     n_batches = 0
     with torch.no_grad():
         for x_batch, y_batch in loader:
+            x_batch = x_batch.to(device)
+            y_batch = y_batch.to(device)
             pred = model(x_batch)
             loss = criterion(pred, y_batch)
             total_loss += loss.item()

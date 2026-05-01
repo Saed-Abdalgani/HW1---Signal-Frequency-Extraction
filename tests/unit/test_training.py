@@ -49,7 +49,17 @@ class TestTrainOneEpoch:
         opt = torch.optim.Adam(model.parameters(), lr=0.1)
         for _ in range(5):
             loss = train_one_epoch(model, loader, opt, nn.MSELoss(), grad_clip=1.0)
-            assert not (loss != loss), "Loss is NaN"
+            assert loss == loss, "Loss is NaN"
+
+    def test_extreme_noise_like_values_stay_finite(self) -> None:
+        """EC.3: Large noisy inputs do not make one training epoch diverge."""
+        x = torch.randn(64, 14) * 10.0
+        y = torch.randn(64, 1) * 10.0
+        loader = DataLoader(TensorDataset(x, y), batch_size=16)
+        model = nn.Sequential(nn.Linear(14, 32), nn.Tanh(), nn.Linear(32, 1))
+        opt = torch.optim.Adam(model.parameters(), lr=0.001)
+        loss = train_one_epoch(model, loader, opt, nn.MSELoss(), grad_clip=1.0)
+        assert torch.isfinite(torch.tensor(loss))
 
 
 class TestEvaluate:

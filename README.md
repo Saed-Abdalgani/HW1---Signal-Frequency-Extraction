@@ -340,3 +340,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+---
+
+## Limitations & Future Work
+
+- The dataset is synthetic and single-channel, so results should not be treated as evidence for real sensor, audio, or RF deployments without domain-specific validation.
+- The current window size is fixed globally. Low-frequency signals would benefit from adaptive or frequency-aware window lengths.
+- The Dash UI is a local exploratory dashboard, not a hardened production web service.
+- The training pipeline optimizes one-step regression only; multi-step forecasting and uncertainty estimates are natural next experiments.
+- Future work could add remote storage adapters behind the Gatekeeper, richer noise models, and cross-validation across wider frequency grids.
+
+## Architectural Decisions
+
+The implementation follows the ADRs in [docs/PLAN.md](docs/PLAN.md):
+
+| ADR | Decision |
+|-----|----------|
+| ADR-1 | Use pure PyTorch training loops instead of Lightning or Keras. |
+| ADR-2 | Use Tanh-aligned bounded activations for sinusoidal regression. |
+| ADR-3 | Use Adam for all model families to keep comparisons controlled. |
+| ADR-4 | Route file I/O through the Gatekeeper abstraction. |
+| ADR-5 | Keep hyperparameters and paths config-driven. |
+| ADR-6 | Use Plotly Dash for the local Sinusoid Explorer UI. |

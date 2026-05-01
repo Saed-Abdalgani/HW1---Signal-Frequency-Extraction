@@ -246,3 +246,12 @@ All tests are deterministic (fixed seed).  External I/O is mocked.  No test touc
 | New UI tab             | Add `_<name>_tab()` to `UIService`; register callback; add to layout  |
 | New noise model        | Add option to `DataService.generate()`; expose in UI Noise dropdown   |
 | New filter type        | Implement filter in `DataService`; add option to UI Filter dropdown   |
+
+### Gatekeeper Extension Matrix
+
+| Extension Target | Adapter Surface | Required Methods | Notes |
+|------------------|-----------------|------------------|-------|
+| Local file I/O | `ApiGatekeeper.execute(callable)` | save/load datasets, checkpoints, plot files | Current implementation; retries transient disk or permission failures. |
+| HTTP storage | `HttpGatekeeperAdapter` scaffold | `get(url)`, `put(url, bytes)`, `post(url, json)` | Add service config under `rate_limits.services.http`; keep retries and queue status identical to file I/O. |
+| Object storage | `ObjectStoreGatekeeperAdapter` scaffold | `upload(key, bytes)`, `download(key)` | Reuse Gatekeeper backoff and logging; adapter owns credentials through environment variables only. |
+| Metrics sink | `MetricsGatekeeperAdapter` scaffold | `emit(name, value, tags)` | Optional future telemetry path; no metrics are emitted by the current offline project. |

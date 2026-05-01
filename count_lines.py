@@ -1,7 +1,6 @@
 """Count code lines (excluding blanks, comment-only, docstrings)."""
-import re
-import sys
 from pathlib import Path
+
 
 def count_code_lines(filepath):
     lines = Path(filepath).read_text(encoding="utf-8").splitlines()

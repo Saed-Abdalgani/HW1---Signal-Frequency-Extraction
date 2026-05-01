@@ -39,6 +39,20 @@ class TestDatasetSplitter:
         with pytest.raises(ValueError, match="sum to 1.0"):
             DatasetSplitter.split(small_entries, 0.5, 0.5, 0.5, rng)
 
+    def test_empty_entries_raise(self, rng) -> None:
+        """EC.1: Empty dataset split raises a clear ValueError."""
+        with pytest.raises(ValueError, match="entries must not be empty"):
+            DatasetSplitter.split([], 0.7, 0.15, 0.15, rng)
+
+    def test_single_frequency_split_keeps_one_hot_shape(self, small_entries, rng) -> None:
+        """EC.2: Single-frequency datasets split and keep 4-dim labels."""
+        single_freq = [e for e in small_entries if int(np.argmax(e["frequency_label"])) == 0]
+        train, val, test = DatasetSplitter.split(single_freq, 0.7, 0.15, 0.15, rng)
+        assert train and val and test
+        for entry in train + val + test:
+            assert entry["frequency_label"].shape == (4,)
+            assert np.sum(entry["frequency_label"]) == 1.0
+
 
 class TestDataNormalizer:
     """Zero-mean unit-variance normalisation tests."""
@@ -48,6 +62,8 @@ class TestDataNormalizer:
         norm = DataNormalizer()
         norm.fit(small_entries)
         assert norm.std > 0
+        assert np.isfinite(norm.mean)
+        assert np.isfinite(norm.std)
         assert isinstance(norm.mean, float)
 
     def test_transform_normalises(self, small_entries) -> None:
@@ -78,3 +94,9 @@ class TestDataNormalizer:
         norm = DataNormalizer()
         norm.fit(entries)
         assert norm.std == 1.0
+
+    def test_empty_entries_raise(self) -> None:
+        """EC.1: Empty normaliser fit raises a clear ValueError."""
+        norm = DataNormalizer()
+        with pytest.raises(ValueError, match="entries must not be empty"):
+            norm.fit([])

@@ -6,10 +6,7 @@ and persistence via gatekeeper.
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import numpy as np
-import pytest
 
 from freq_extractor.services.data_pipeline import (
     build_full_dataset,
@@ -27,6 +24,19 @@ class TestDataPipeline:
         assert len(train) > 0
         assert len(val) > 0
         assert len(test) > 0
+
+    def test_generated_dataset_integrity(self, sample_config, tmp_config_dir) -> None:
+        """DV.9-DV.12: generated splits are finite, disjoint, and valid."""
+        train, val, test = build_full_dataset(sample_config, seed=42)
+        assert {id(e) for e in train}.isdisjoint({id(e) for e in val})
+        assert {id(e) for e in train}.isdisjoint({id(e) for e in test})
+        assert {id(e) for e in val}.isdisjoint({id(e) for e in test})
+        for entry in train + val + test:
+            for key in ("noisy_samples", "clean_samples", "target_output",
+                        "frequency_label"):
+                assert entry[key].dtype == np.float32
+                assert np.isfinite(entry[key]).all()
+            assert np.sum(entry["frequency_label"]) == 1.0
 
     def test_reproducibility(self, sample_config, tmp_config_dir) -> None:
         """SG-T4: Same seed produces identical datasets."""
@@ -56,3 +66,6 @@ class TestDataPipeline:
         assert len(t2) == len(train)
         assert len(v2) == len(val)
         assert len(te2) == len(test)
+        for original, loaded in zip(train[:5], t2[:5], strict=True):
+            for key in original:
+                np.testing.assert_array_equal(original[key], loaded[key])

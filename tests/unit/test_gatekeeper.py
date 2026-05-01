@@ -6,6 +6,8 @@ singleton factory, and rate limiter.
 
 from __future__ import annotations
 
+import contextlib
+
 import pytest
 
 from freq_extractor.shared.gatekeeper import ApiGatekeeper, GatekeeperError, get_gatekeeper
@@ -80,8 +82,6 @@ class TestApiGatekeeper:
     def test_error_stats_increment(self, tmp_config_dir) -> None:
         """total_errors increments on failures."""
         gk = ApiGatekeeper("default")
-        try:
+        with contextlib.suppress(GatekeeperError):
             gk.execute(lambda: 1 / 0)
-        except GatekeeperError:
-            pass
         assert gk.get_queue_status()["total_errors"] > 0
