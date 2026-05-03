@@ -127,3 +127,85 @@ class TestLoadJson:
         clear_cache()
         with pytest.raises(ValueError, match="level"):
             get_logging_config()
+
+    def test_missing_keys_raises(self, tmp_config_dir) -> None:
+        """DV.1: Missing keys raise ValueError."""
+        path = tmp_config_dir / "setup.json"
+        cfg = json.loads(path.read_text())
+        del cfg["dataset"]
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="missing required keys: \\['dataset'\\]"):
+            get_setup()
+
+    def test_negative_amplitude_or_noise_raises(self, tmp_config_dir) -> None:
+        """Negative amplitude or noise raises ValueError."""
+        path = tmp_config_dir / "setup.json"
+        cfg = json.loads(path.read_text())
+        cfg["signal"]["amplitude"] = -1.0
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="amplitude and noise_std_ratio must be non-negative"):
+            get_setup()
+
+    def test_window_size_too_large_raises(self, tmp_config_dir) -> None:
+        """Window size >= total samples raises ValueError."""
+        path = tmp_config_dir / "setup.json"
+        cfg = json.loads(path.read_text())
+        cfg["signal"]["window_size"] = 1000000
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="window_size must be < total signal samples"):
+            get_setup()
+
+    def test_split_ratios_do_not_sum_to_one(self, tmp_config_dir) -> None:
+        """Split ratios not summing to 1.0 raises ValueError."""
+        path = tmp_config_dir / "setup.json"
+        cfg = json.loads(path.read_text())
+        cfg["dataset"]["train_ratio"] = 0.5
+        cfg["dataset"]["val_ratio"] = 0.5
+        cfg["dataset"]["test_ratio"] = 0.5
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="ratios must sum to 1.0"):
+            get_setup()
+
+    def test_rate_limits_missing_services(self, tmp_config_dir) -> None:
+        """Missing services in rate limits raises ValueError."""
+        path = tmp_config_dir / "rate_limits.json"
+        cfg = json.loads(path.read_text())
+        cfg["rate_limits"]["services"] = {}
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="must be a non-empty mapping"):
+            get_rate_limits()
+
+    def test_rate_limits_negative_retry(self, tmp_config_dir) -> None:
+        """Negative retry in rate limits raises ValueError."""
+        path = tmp_config_dir / "rate_limits.json"
+        cfg = json.loads(path.read_text())
+        cfg["rate_limits"]["services"]["default"]["max_retries"] = -1
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="retry/max_retries must be >= 0"):
+            get_rate_limits()
+
+    def test_logging_missing_handlers(self, tmp_config_dir) -> None:
+        """Missing handlers in logging config raises ValueError."""
+        path = tmp_config_dir / "logging_config.json"
+        cfg = json.loads(path.read_text())
+        cfg["logging"]["handlers"] = {}
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="must be a non-empty mapping"):
+            get_logging_config()
+
+    def test_logging_invalid_root_level(self, tmp_config_dir) -> None:
+        """Invalid root level in logging config raises ValueError."""
+        path = tmp_config_dir / "logging_config.json"
+        cfg = json.loads(path.read_text())
+        cfg["logging"]["root"]["level"] = "INVALID"
+        path.write_text(json.dumps(cfg))
+        clear_cache()
+        with pytest.raises(ValueError, match="root.level is invalid"):
+            get_logging_config()

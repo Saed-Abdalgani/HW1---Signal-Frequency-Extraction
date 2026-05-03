@@ -61,6 +61,19 @@ class TestPerFrequencyMSE:
         for _freq, mse in result.items():
             assert mse >= 0
 
+    def test_missing_freq_subset(self, small_entries, sample_config) -> None:
+        """compute_per_frequency_mse skips frequencies missing from entries."""
+        from freq_extractor.services.mlp_model import MLPModel
+        import numpy as np
+
+        model = MLPModel(window_size=10, hidden_sizes=[16, 32, 16])
+        # Filter out first frequency class (index 0)
+        subset = [e for e in small_entries if int(np.argmax(e["frequency_label"])) != 0]
+        result = compute_per_frequency_mse(model, subset, "mlp", sample_config)
+        assert len(result) == 3
+        # Assuming freq 5.0 is index 0
+        assert 5.0 not in result
+
 
 class TestComparisonTable:
     """Markdown comparison table generation tests."""

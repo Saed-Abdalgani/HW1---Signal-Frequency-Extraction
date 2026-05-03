@@ -61,6 +61,16 @@ class TestTrainOneEpoch:
         loss = train_one_epoch(model, loader, opt, nn.MSELoss(), grad_clip=1.0)
         assert torch.isfinite(torch.tensor(loss))
 
+    def test_empty_loader_raises(self) -> None:
+        """Training on empty dataloader raises ValueError."""
+        import pytest
+        from freq_extractor.services.training_service import train_one_epoch
+        model = nn.Linear(14, 1)
+        opt = torch.optim.Adam(model.parameters(), lr=0.01)
+        loader = []
+        with pytest.raises(ValueError, match="DataLoader is empty — cannot train on zero batches."):
+            train_one_epoch(model, loader, opt, nn.MSELoss())
+
 
 class TestEvaluate:
     """Evaluation function tests."""

@@ -77,3 +77,61 @@ class TestApplyBPF:
         sig = np.sin(np.linspace(0, 1, 100))
         result = _apply_bpf(sig, 0.0, 0.0, 200.0)
         np.testing.assert_array_equal(result, sig)
+
+
+class FakeApp:
+    """Mock Dash app to capture registered callbacks."""
+    def __init__(self):
+        self.callbacks = {}
+
+    def callback(self, *args, **kwargs):
+        def decorator(func):
+            self.callbacks[func.__name__] = func
+            return func
+        return decorator
+
+
+class TestUICallbacks:
+    """Dash callback logic tests."""
+
+    def test_update_metrics(self, sample_config) -> None:
+        """update_metrics returns correctly formatted strings."""
+        from freq_extractor.services.ui_callbacks import register_callbacks
+        app = FakeApp()
+        register_callbacks(app, sample_config)
+        res = app.callbacks["update_metrics"](200, 2, 5, 0, 0, 0)
+        assert res[0] == " 200 Hz"
+        assert res[1] == " 2"
+        assert res[3] == " 5.0 Hz"
+        assert res[5] == " 100.0 Hz"
+
+    def test_update_sin_vals(self, sample_config) -> None:
+        """update_sin_vals formats sinusoid parameters."""
+        from freq_extractor.services.ui_callbacks import register_callbacks
+        app = FakeApp()
+        register_callbacks(app, sample_config)
+        res = app.callbacks["update_sin_vals"](5.0, 0.5, 1.0, 0.1)
+        assert res == ("5.0 Hz", "0.50 rad", "1.00", "0.10")
+
+    def test_update_signals(self, sample_config) -> None:
+        """update_signals returns individual and combined plots."""
+        from freq_extractor.services.ui_callbacks import register_callbacks
+        app = FakeApp()
+        register_callbacks(app, sample_config)
+        sin_vals = [
+            ["mix"], ["bpf"], 5.0, 0.0, 1.0, 0.1,
+            [], [], 0.0, 0.0, 0.0, 0.0,
+            ["mix"], [], 30.0, 0.0, 0.5, 0.0,
+            [], [], 0.0, 0.0, 0.0, 0.0,
+        ]
+        ind, comb = app.callbacks["update_signals"](200, 2, 5, "DOTS", "Gaussian", "Bandpass", *sin_vals)
+        assert ind is not None
+        assert comb is not None
+
+    def test_toggle_sweep(self, sample_config) -> None:
+        """toggle_sweep inverts the disabled state."""
+        from freq_extractor.services.ui_callbacks import register_callbacks
+        app = FakeApp()
+        register_callbacks(app, sample_config)
+        assert app.callbacks["toggle_sweep"](1, True) is False
+        assert app.callbacks["toggle_sweep"](1, False) is True

@@ -12,6 +12,7 @@ from freq_extractor.constants import NUM_CLASSES, TENSOR_DTYPE
 from freq_extractor.services.datasets import (
     MLPDataset,
     SequentialDataset,
+    _worker_init_fn,
     create_dataloader,
 )
 
@@ -96,3 +97,21 @@ class TestDataLoader:
         batch_x, batch_y = next(iter(loader))
         assert batch_x.shape[0] == 3
         assert batch_y.shape[0] == 3
+
+    def test_worker_init_fn(self) -> None:
+        """_worker_init_fn seeds numpy and random based on torch seed."""
+        import random
+        import numpy as np
+
+        torch.manual_seed(12345)
+        _worker_init_fn(0)
+        np_val1 = np.random.rand()
+        rand_val1 = random.random()
+
+        torch.manual_seed(12345)
+        _worker_init_fn(0)
+        np_val2 = np.random.rand()
+        rand_val2 = random.random()
+
+        assert np_val1 == np_val2
+        assert rand_val1 == rand_val2

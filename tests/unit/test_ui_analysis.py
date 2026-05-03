@@ -88,3 +88,61 @@ class TestFFTComputation:
         sig = np.sin(np.linspace(0, 10, 200))
         spectrum = np.abs(np.fft.rfft(sig))
         assert (spectrum >= 0).all()
+
+
+class FakeApp:
+    """Mock Dash app to capture registered callbacks."""
+    def __init__(self):
+        self.callbacks = {}
+
+    def callback(self, *args, **kwargs):
+        def decorator(func):
+            self.callbacks[func.__name__] = func
+            return func
+        return decorator
+
+
+class TestUIAnalysisCallbacks:
+    """Dash analysis callback logic tests."""
+
+    def test_update_tsne(self) -> None:
+        """update_tsne returns a valid 3D scatter plot."""
+        from freq_extractor.services.ui_analysis import register_analysis_callbacks
+        app = FakeApp()
+        register_analysis_callbacks(app, [])
+        sin_vals = [
+            ["mix"], [], 5.0, 0.0, 1.0, 0.1,
+            [], [], 0.0, 0.0, 0.0, 0.0,
+            ["mix"], [], 30.0, 0.0, 0.5, 0.0,
+            [], [], 0.0, 0.0, 0.0, 0.0,
+        ]
+        fig = app.callbacks["update_tsne"](5, 200, 2, 5, "LINE", "None", "None", *sin_vals)
+        assert fig is not None
+
+    def test_update_pca(self) -> None:
+        """update_pca returns a valid 3D scatter plot."""
+        from freq_extractor.services.ui_analysis import register_analysis_callbacks
+        app = FakeApp()
+        register_analysis_callbacks(app, [])
+        sin_vals = [
+            ["mix"], [], 5.0, 0.0, 1.0, 0.1,
+            ["mix"], [], 10.0, 0.0, 0.0, 0.0,
+            ["mix"], [], 30.0, 0.0, 0.5, 0.0,
+            [], [], 0.0, 0.0, 0.0, 0.0,
+        ]
+        fig = app.callbacks["update_pca"](200, 2, 5, "LINE", "None", "None", *sin_vals)
+        assert fig is not None
+
+    def test_update_fft(self) -> None:
+        """update_fft returns a magnitude spectrum plot."""
+        from freq_extractor.services.ui_analysis import register_analysis_callbacks
+        app = FakeApp()
+        register_analysis_callbacks(app, [])
+        sin_vals = [
+            ["mix"], ["bpf"], 5.0, 0.0, 1.0, 0.1,
+            [], [], 0.0, 0.0, 0.0, 0.0,
+            ["mix"], [], 30.0, 0.0, 0.5, 0.0,
+            [], [], 0.0, 0.0, 0.0, 0.0,
+        ]
+        fig = app.callbacks["update_fft"](["log"], 200, 2, 5, "LINE", "None", "None", *sin_vals)
+        assert fig is not None

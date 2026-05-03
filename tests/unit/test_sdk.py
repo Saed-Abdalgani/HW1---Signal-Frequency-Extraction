@@ -55,3 +55,45 @@ def test_cuda_oom_falls_back_to_cpu(monkeypatch, sample_config, small_entries) -
     assert sdk.device.type == "cpu"
     assert calls["train"] == 2
     assert history["best_val_mse"] == 1.0
+
+def test_cuda_oom_cpu_fails(monkeypatch, sample_config, small_entries) -> None:
+    """If already on CPU, CUDA OOM should raise instead of infinite loop."""
+    from freq_extractor.services import model_factory, training_service
+
+    def fake_create_model(_model_type, _config):
+        return _FakeModel()
+
+    def fake_train(*args, **kwargs):
+        raise RuntimeError("CUDA out of memory")
+
+    monkeypatch.setattr(model_factory.ModelFactory, "create_model",
+                        staticmethod(fake_create_model))
+    monkeypatch.setattr(training_service, "train", fake_train)
+
+    sdk = FreqExtractorSDK(config=sample_config, seed=42)
+    sdk._device = torch.device("cpu")
+    import pytest
+    with pytest.raises(RuntimeError, match="CUDA out of memory"):
+        sdk.train("mlp", small_entries[:8], small_entries[8:16])
+
+def test_sdk_env_seed_and_cpu(monkeypatch) -> None:
+    """Test environment variable overrides for seed and device."""
+    monkeypatch.setenv("FREQ_EXTRACTOR_SEED", "999")
+    monkeypatch.setenv("FREQ_EXTRACTOR_FORCE_CPU", "1")
+    sdk = FreqExtractorSDK(config={"dataset": {"seed": 123}})
+    assert sdk.seed == 999
+    assert sdk.device.type == "cpu"
+
+def test_sdk_launch_ui(monkeypatch) -> None:
+    """Test launch_ui delegates correctly."""
+    from freq_extractor.services.ui_service import UIService
+    
+    called_port = None
+    def mock_launch_ui(self, port=8050):
+        nonlocal called_port
+        called_port = port
+        
+    monkeypatch.setattr(UIService, "launch_ui", mock_launch_ui)
+    sdk = FreqExtractorSDK(config={"dataset": {"seed": 123}})
+    sdk.launch_ui(port=1234)
+    assert called_port == 1234

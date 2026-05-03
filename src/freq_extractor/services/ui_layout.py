@@ -1,7 +1,7 @@
 """Dash layout builder for the Sinusoid Explorer.
 
-Constructs the sidebar, header metrics bar, and assembles the
-full dashboard layout using components from ``ui_components.py``.
+Constructs the full-height sidebar + header-bar layout matching
+the React reference design.
 
 References
 ----------
@@ -40,24 +40,29 @@ def build_layout(config: dict[str, Any]) -> html.Div:
         Top-level Dash container.
     """
     return html.Div([
+        # ── Left Sidebar ──
         html.Div([
+            # Title area
             html.Div([
-                html.Div("(*)", className="app-logo"),
-                html.H1("SINUSOID EXPLORER", className="app-title"),
-            ], className="title-group"),
-            html.Div(header_metrics(), className="metrics-bar"),
-        ], className="app-header"),
-        html.Div(
-            [
-                html.Div(
-                    [global_controls(config)] + build_sin_controls(),
-                    className="sidebar",
-                ),
-                html.Div(
-                    [build_tabs()],
-                    className="main-content",
-                ),
-            ],
-            className="main-grid",
-        ),
+                html.H1("Sinusoid Explorer"),
+                html.P("HW1 — Signal Frequency Extraction"),
+            ], className="sidebar-title-block"),
+            # Global controls
+            global_controls(config),
+            # Per-sinusoid controls
+            html.Div(
+                build_sin_controls(),
+                className="sin-controls-area",
+            ),
+        ], className="sidebar"),
+
+        # ── Main Content Area ──
+        html.Div([
+            # Header bar with metrics + tabs
+            html.Div([
+                html.Div(header_metrics(), className="metrics-bar"),
+            ], className="app-header"),
+            # Tab panel
+            build_tabs(),
+        ], className="main-area"),
     ], className="dashboard-container")

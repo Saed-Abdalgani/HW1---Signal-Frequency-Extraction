@@ -15,7 +15,7 @@ from sklearn.manifold import TSNE
 from freq_extractor.services.ui_layout import SIN_COLOURS
 
 _DARK = {
-    "paper_bgcolor": "#0d1117", "plot_bgcolor": "#161b22",
+    "paper_bgcolor": "#0d1117", "plot_bgcolor": "#0d1117",
     "font": {"color": "#e6edf3"}, "margin": {"l": 40, "r": 20, "t": 40, "b": 40},
 }
 
@@ -52,14 +52,18 @@ def register_analysis_callbacks(app: Any, all_inputs: list) -> None:
                 features.append(sig[j:j + window])
                 labels.append(f"Sin {i + 1}")
                 colours.append(SIN_COLOURS[i])
-        fig = go.Figure(layout={**_DARK, "title": "T-SNE 3D"})
+        fig = go.Figure(layout={**_DARK, "title": "T-SNE 3D Visualization"})
         if len(features) >= 4:
             feat = np.array(features)
             perp = min(perp or 30, len(feat) - 1)
             emb = TSNE(n_components=3, perplexity=max(perp, 2), random_state=42).fit_transform(feat)
             fig.add_trace(go.Scatter3d(x=emb[:, 0], y=emb[:, 1], z=emb[:, 2],
-                mode="markers", marker={"size": 3, "color": colours, "opacity": 0.7},
+                mode="markers", marker={"size": 4, "color": colours, "opacity": 0.8},
                 text=labels, hoverinfo="text"))
+            fig.update_layout(scene={
+                "xaxis_title": "Dim 1",
+                "yaxis_title": "Dim 2",
+                "zaxis_title": "Dim 3"})
         return fig
 
     @app.callback(Output("pca-plot", "figure"), all_inputs)
@@ -80,19 +84,19 @@ def register_analysis_callbacks(app: Any, all_inputs: list) -> None:
                 features.append(sig[j:j + window])
                 labels.append(f"Sin {i + 1}")
                 colours.append(SIN_COLOURS[i])
-        fig = go.Figure(layout={**_DARK, "title": "PCA 3D"})
+        fig = go.Figure(layout={**_DARK, "title": "PCA 3D Visualization"})
         if len(features) >= 3:
             feat = np.array(features)
             pca = PCA(n_components=3)
             emb = pca.fit_transform(feat)
             evr = pca.explained_variance_ratio_ * 100
             fig.add_trace(go.Scatter3d(x=emb[:, 0], y=emb[:, 1], z=emb[:, 2],
-                mode="markers", marker={"size": 3, "color": colours, "opacity": 0.7},
+                mode="markers", marker={"size": 4, "color": colours, "opacity": 0.8},
                 text=labels, hoverinfo="text"))
             fig.update_layout(scene={
-                "xaxis_title": f"PC1 ({evr[0]:.1f} %)",
-                "yaxis_title": f"PC2 ({evr[1]:.1f} %)",
-                "zaxis_title": f"PC3 ({evr[2]:.1f} %)"})
+                "xaxis_title": f"PC1 ({evr[0]:.1f}%)",
+                "yaxis_title": f"PC2 ({evr[1]:.1f}%)",
+                "zaxis_title": f"PC3 ({evr[2]:.1f}%)"})
         return fig
 
     @app.callback(Output("fft-plot", "figure"),
@@ -116,17 +120,17 @@ def register_analysis_callbacks(app: Any, all_inputs: list) -> None:
                 combined = np.zeros_like(sig)
             ml = min(len(sig), len(combined))
             combined = combined[:ml] + sig[:ml]
-        fig = go.Figure(layout={**_DARK, "title": "FFT Spectrum"})
+        fig = go.Figure(layout={**_DARK, "title": "FFT Magnitude Spectrum"})
         if combined is not None and len(combined) > 1:
             spectrum = np.abs(np.fft.rfft(combined))
             freqs_ax = np.fft.rfftfreq(len(combined), d=1 / fs)
             fig.add_trace(go.Scatter(x=freqs_ax, y=spectrum, mode="lines",
-                line={"color": "#58a6ff"}, name="Magnitude"))
+                line={"color": "#1f6feb"}, name="Magnitude"))
             for freq, colour, bw_val, has_bpf in active_freqs:
-                fig.add_vline(x=freq, line={"color": colour, "dash": "dash", "width": 1.5})
+                fig.add_vline(x=freq, line={"color": colour, "dash": "dash", "width": 2})
                 if has_bpf:
                     fig.add_vrect(x0=freq - bw_val / 2, x1=freq + bw_val / 2,
-                        fillcolor=colour, opacity=0.1, line_width=0)
+                        fillcolor=colour, opacity=0.15, line_width=0)
             if log_scale and "log" in log_scale:
                 fig.update_xaxes(type="log")
             fig.update_xaxes(title="Frequency (Hz)")

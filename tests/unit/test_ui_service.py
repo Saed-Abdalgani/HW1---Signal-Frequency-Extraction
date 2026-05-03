@@ -93,6 +93,21 @@ class TestUIService:
         app2 = svc.build_app()
         assert isinstance(app2, dash.Dash)
 
+    def test_launch_ui(self, sample_config, monkeypatch) -> None:
+        """launch_ui builds the app and calls run()."""
+        svc = UIService(config=sample_config)
+        called = False
+
+        def mock_run(self, port, debug):
+            nonlocal called
+            called = True
+            assert port == 1234
+            assert debug is False
+
+        monkeypatch.setattr(dash.Dash, "run", mock_run)
+        svc.launch_ui(port=1234)
+        assert called
+
     def test_four_tabs_present(self, sample_config) -> None:
         """8.16: Layout exposes the required four dashboard tabs."""
         app = UIService(config=sample_config).build_app()

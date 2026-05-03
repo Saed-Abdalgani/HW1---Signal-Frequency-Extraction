@@ -15,14 +15,15 @@ from typing import Any
 import numpy as np
 import plotly.graph_objects as go
 from dash import Input, Output, State
+
 from scipy.signal import butter, sosfilt
 
 from freq_extractor.services.ui_analysis import register_analysis_callbacks
 from freq_extractor.services.ui_layout import SIN_COLOURS
 
 _DARK_LAYOUT = {
-    "paper_bgcolor": "#060b10", "plot_bgcolor": "#0d131a",
-    "font": {"color": "#8b949e", "family": "Inter"},
+    "paper_bgcolor": "#0d1117", "plot_bgcolor": "#0d1117",
+    "font": {"color": "#e6edf3", "family": "Inter"},
     "margin": {"l": 40, "r": 20, "t": 40, "b": 40},
     "xaxis": {"gridcolor": "#1e2632", "zerolinecolor": "#1e2632"},
     "yaxis": {"gridcolor": "#1e2632", "zerolinecolor": "#1e2632"},
@@ -72,8 +73,9 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
                    Input("noise-dropdown", "value"), Input("filter-dropdown", "value")]
                   + sin_inputs)
 
+    # ── Header metrics ──
     @app.callback(
-        [Output(f"metric-{m}", "children") for m in ["Fs", "N-CYC", "T", "N", "F_MIN"]],
+        [Output(f"metric-{m}", "children") for m in ["Fs", "N-CYC", "T", "F_MIN", "N", "NYQ"]],
         [Input("fs-slider", "value"), Input("n-cycles", "value")]
         + [Input(f"freq-{i}", "value") for i in range(1, 5)],
     )
@@ -83,10 +85,27 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
         f_min = min(f for f in freqs if f and f > 0) if any(f and f > 0 for f in freqs) else 1
         dur = n_cyc / f_min
         n_samp = int(fs * dur)
-        f_res = fs / n_samp if n_samp > 0 else 0
-        return (f"FS {fs} Hz", f"N-CYC {n_cyc}", f"T {dur:.3f} s",
-                f"N {n_samp} snp", f"F_MIN {f_res:.2f} Hz")
+        return (f" {fs} Hz", f" {n_cyc}", f" {dur:.2f}s",
+                f" {f_min:.1f} Hz", f" {n_samp}", f" {fs / 2:.1f} Hz")
 
+    # ── Per-sinusoid value displays ──
+    for i in range(1, 5):
+        c = SIN_COLOURS[i - 1]
+
+        @app.callback(
+            [Output(f"f-val-{i}", "children"), Output(f"phi-val-{i}", "children"),
+             Output(f"a-val-{i}", "children"), Output(f"sig-val-{i}", "children")],
+            [Input(f"freq-{i}", "value"), Input(f"phase-{i}", "value"),
+             Input(f"amp-{i}", "value"), Input(f"sigma-{i}", "value")],
+        )
+        def update_sin_vals(freq, phase, amp, sigma, _i=i):
+            freq = freq or 0
+            phase = phase or 0
+            amp = amp or 0
+            sigma = sigma or 0
+            return (f"{freq:.1f} Hz", f"{phase:.2f} rad", f"{amp:.2f}", f"{sigma:.2f}")
+
+    # ── Signals plots ──
     @app.callback(
         [Output("individual-plot", "figure"), Output("combined-plot", "figure")],
         all_inputs,
@@ -97,7 +116,7 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
         mode = "markers" if display == "DOTS" else "lines"
         rng = np.random.default_rng(0)
 
-        ind_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "Individual Sinusoids", "font": {"color": "#3fb950"}}})
+        ind_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "Individual Sinusoids", "font": {"color": "#e6edf3"}}})
         combined = None
         t_ref = None
 
@@ -114,7 +133,10 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
                 sig = _apply_bpf(sig, freq, bw or 5, fs)
 
             ind_fig.add_trace(go.Scatter(x=t, y=sig, mode=mode,
-                name=f"Sin {i + 1} pure", line={"color": SIN_COLOURS[i]}))
+                name=f"Sin {i + 1}",
+                visible=True if (mix and "mix" in mix) else "legendonly",
+                line={"color": SIN_COLOURS[i]},
+                marker={"color": SIN_COLOURS[i]}))
 
             if mix and "mix" in mix:
                 if combined is None:
@@ -125,16 +147,19 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
                     sig, combined, t_ref = sig[:ml], combined[:ml], t_ref[:ml]
                 combined += sig
 
-        comb_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": "Combined Signal", "font": {"color": "#3fb950"}}})
+        comb_title = "Combined Signal (Noisy)" if noise_type and noise_type != "None" else "Combined Signal (Clean)"
+        comb_fig = go.Figure(layout={**_DARK_LAYOUT, "title": {"text": comb_title, "font": {"color": "#e6edf3"}}})
         if combined is not None:
             combined = _add_noise(combined, noise_type or "None", rng)
             comb_fig.add_trace(go.Scatter(x=t_ref, y=combined, mode=mode,
-                name="Mixed clean", line={"color": "#f0f6fc"}))
+                name="Noisy Mixed" if noise_type and noise_type != "None" else "Clean Mixed",
+                line={"color": "#ffffff"}))
 
-        ind_fig.update_layout(xaxis_title="t (s)")
-        comb_fig.update_layout(xaxis_title="t (s)")
+        ind_fig.update_layout(xaxis_title="t (s)", hovermode="x unified")
+        comb_fig.update_layout(xaxis_title="t (s)", hovermode="closest")
         return ind_fig, comb_fig
 
+    # ── Sweep noise toggle ──
     @app.callback(
         Output("sweep-interval", "disabled"),
         Input("sweep-btn", "n_clicks"),
