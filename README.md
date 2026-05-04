@@ -148,7 +148,7 @@ The models were evaluated on the strictly held-out test split (15% of total data
 
 The training and validation loss curves illustrate rapid early convergence. The `ReduceLROnPlateau` scheduler visually tightens the variance in later epochs, and Early Stopping successfully prevents validation divergence.
 
-![Training Curves](file:///c:/Users/saedn/Desktop/HW1%20%E2%80%94%20Signal%20Frequency%20Extraction/results/training_curves.png)
+
 
 ---
 
@@ -157,13 +157,13 @@ The training and validation loss curves illustrate rapid early convergence. The 
 The following figures visually contrast the models' predictions against the highly erratic noisy input and the perfectly smooth ground-truth target.
 
 ### MLP Predictions
-![MLP Predictions](file:///c:/Users/saedn/Desktop/HW1%20%E2%80%94%20Signal%20Frequency%20Extraction/results/predictions_mlp.png)
+
 
 ### RNN Predictions
-![RNN Predictions](file:///c:/Users/saedn/Desktop/HW1%20%E2%80%94%20Signal%20Frequency%20Extraction/results/predictions_rnn.png)
+
 
 ### LSTM Predictions
-![LSTM Predictions](file:///c:/Users/saedn/Desktop/HW1%20%E2%80%94%20Signal%20Frequency%20Extraction/results/predictions_lstm.png)
+
 
 *Observation: All three models successfully filter out high-frequency Gaussian noise, generating remarkably smooth sinusoidal trajectories that tightly track the clean target line.*
 
@@ -173,7 +173,7 @@ The following figures visually contrast the models' predictions against the high
 
 To evaluate model resilience, we conducted a systematic stress test by exponentially increasing the noise standard deviation ratio ($\sigma$) from 0.05 to 0.50. 
 
-![Noise Robustness](file:///c:/Users/saedn/Desktop/HW1%20%E2%80%94%20Signal%20Frequency%20Extraction/results/noise_robustness.png)
+
 
 **Analysis:**
 As expected, Test MSE degrades quadratically as the Signal-to-Noise Ratio (SNR) plummets. However, the LSTM demonstrates superior asymptotic stability at extreme noise levels ($\sigma = 0.50$), proving that its gated memory cells are significantly more adept at filtering out severe stochastic perturbations compared to the flat MLP structure.
@@ -184,7 +184,7 @@ As expected, Test MSE degrades quadratically as the Signal-to-Noise Ratio (SNR) 
 
 Different frequencies pose distinct temporal challenges. We computed the exact MSE isolated to each frequency class.
 
-![Per-Frequency MSE](file:///c:/Users/saedn/Desktop/HW1%20%E2%80%94%20Signal%20Frequency%20Extraction/results/per_frequency_mse.png)
+
 
 **Analysis:**
 - **5 Hz (Low Frequency)**: Represents the highest error across all models. Because 10 samples cover only a tiny fraction of a 5 Hz wavelength, the models struggle to infer the global phase shift from such a limited, near-linear local slope.
@@ -363,3 +363,30 @@ The implementation follows the ADRs in [docs/PLAN.md](docs/PLAN.md):
 | ADR-4 | Route file I/O through the Gatekeeper abstraction. |
 | ADR-5 | Keep hyperparameters and paths config-driven. |
 | ADR-6 | Use Plotly Dash for the local Sinusoid Explorer UI. |
+
+---
+
+## Dashboard UI Test Results
+
+The following screenshots demonstrate the interactive dashboard functioning correctly across multiple configurations, parameter changes, and visualisations.
+
+![Dashboard State 1](screenshots/dash_1.png)
+![Dashboard State 2](screenshots/dash_2.png)
+![Dashboard State 3](screenshots/dash_3.png)
+![Dashboard State 4](screenshots/dash_4.png)
+![Dashboard State 5](screenshots/dash_5.png)
+![Dashboard State 6](screenshots/dash_6.png)
+![Dashboard State 7](screenshots/dash_7.png)
+![Dashboard State 8](screenshots/dash_8.png)
+![Dashboard State 9](screenshots/dash_9.png)
+![Dashboard State 10](screenshots/dash_10.png)
+![Dashboard State 11](screenshots/dash_11.png)
+![Dashboard State 12](screenshots/dash_12.png)
+![Dashboard State 13](screenshots/dash_13.png)
+![Dashboard State 14](screenshots/dash_14.png)
+![Dashboard State 15](screenshots/dash_15.png)
+![Dashboard State 16](screenshots/dash_16.png)
+![Dashboard State 17](screenshots/dash_17.png)
+![Dashboard State 18](screenshots/dash_18.png)
+![Dashboard State 19](screenshots/dash_19.png)
+![Dashboard State 20](screenshots/dash_20.png)

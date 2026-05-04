@@ -81,7 +81,7 @@ def _sin_slider(label, sid, c, val_id, **kw):
 def _sin_control(n: int) -> html.Div:
     """Build per-sinusoid control block for Sin *n* (1-indexed)."""
     c = SIN_COLOURS[n - 1]
-    freqs, amps = [5.0, 15.0, 30.0, 50.0], [1.0, 0.8, 0.5, 0.2]
+    freqs, amps = [5.0, 5.0, 5.0, 5.0], [1.0, 0.8, 0.5, 0.2]
     mixes = [True, True, True, False]
     return html.Div([
         html.Div([
