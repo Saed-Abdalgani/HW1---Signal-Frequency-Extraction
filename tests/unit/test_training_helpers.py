@@ -98,11 +98,11 @@ class TestSetAllSeeds:
         monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
         mock_manual_seed_all = []
         monkeypatch.setattr(torch.cuda, "manual_seed_all", lambda seed: mock_manual_seed_all.append(seed))
-        
+
         # Save original states
         orig_deterministic = torch.backends.cudnn.deterministic
         orig_benchmark = torch.backends.cudnn.benchmark
-        
+
         try:
             mock_manual_seed_all.clear()
             set_all_seeds(42)

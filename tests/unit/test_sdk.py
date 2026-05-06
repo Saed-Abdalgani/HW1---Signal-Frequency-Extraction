@@ -87,12 +87,13 @@ def test_sdk_env_seed_and_cpu(monkeypatch) -> None:
 def test_sdk_launch_ui(monkeypatch) -> None:
     """Test launch_ui delegates correctly."""
     from freq_extractor.services.ui_service import UIService
-    
+
     called_port = None
+
     def mock_launch_ui(self, port=8050):
         nonlocal called_port
         called_port = port
-        
+
     monkeypatch.setattr(UIService, "launch_ui", mock_launch_ui)
     sdk = FreqExtractorSDK(config={"dataset": {"seed": 123}})
     sdk.launch_ui(port=1234)

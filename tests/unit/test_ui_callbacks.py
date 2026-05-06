@@ -4,15 +4,11 @@ Validates the internal helper functions used by Dash callbacks.
 """
 
 from __future__ import annotations
-
 import numpy as np
-
-from freq_extractor.services.ui_callbacks import _add_noise, _apply_bpf, _gen_signal
-
+from freq_extractor.services.ui_callbacks import _add_noise, _apply_bpf, _apply_filter, _gen_signal
 
 class TestGenSignal:
     """Signal generation helper tests."""
-
     def test_returns_time_and_signal(self) -> None:
         """_gen_signal returns (time_array, signal_array) of same length."""
         t, sig = _gen_signal(200.0, 2.0, 10.0, 0.0, 1.0)
@@ -36,8 +32,6 @@ class TestGenSignal:
         """Zero frequency falls back to 0.1 Hz."""
         t, sig = _gen_signal(200.0, 2.0, 0.0, 0.0, 1.0)
         assert len(t) > 0
-
-
 class TestAddNoise:
     """Noise addition tests."""
 
@@ -61,8 +55,6 @@ class TestAddNoise:
         rng = np.random.default_rng(42)
         result = _add_noise(sig, "Uniform", rng)
         assert not np.array_equal(result, sig)
-
-
 class TestApplyBPF:
     """Bandpass filter tests."""
 
@@ -78,7 +70,12 @@ class TestApplyBPF:
         result = _apply_bpf(sig, 0.0, 0.0, 200.0)
         np.testing.assert_array_equal(result, sig)
 
-
+    def test_filter_dropdown_modes_return_same_length(self) -> None:
+        """Filter dropdown modes all produce a signal with stable length."""
+        sig = np.sin(np.linspace(0, 10, 1000))
+        for mode in ["None", "Bandpass", "Lowpass", "Highpass"]:
+            result = _apply_filter(sig, 10.0, 5.0, 200.0, mode)
+            assert len(result) == len(sig)
 class FakeApp:
     """Mock Dash app to capture registered callbacks."""
     def __init__(self):
@@ -89,7 +86,6 @@ class FakeApp:
             self.callbacks[func.__name__] = func
             return func
         return decorator
-
 
 class TestUICallbacks:
     """Dash callback logic tests."""
@@ -102,8 +98,16 @@ class TestUICallbacks:
         res = app.callbacks["update_metrics"](200, 2, 5, 0, 0, 0)
         assert res[0] == " 200 Hz"
         assert res[1] == " 2"
-        assert res[3] == " 5.0 Hz"
+        assert res[3] == " 2.50 Hz"
         assert res[5] == " 100.0 Hz"
+
+    def test_constrain_freq_ranges(self, sample_config) -> None:
+        """6K.13: Frequency sliders clamp to the current Nyquist value."""
+        from freq_extractor.services.ui_callbacks import register_callbacks
+        app = FakeApp()
+        register_callbacks(app, sample_config)
+        res = app.callbacks["constrain_freq_ranges"](80, 5, 30, 50, 100)
+        assert res == [40, 40, 40, 40, 5, 30, 40, 40]
 
     def test_update_sin_vals(self, sample_config) -> None:
         """update_sin_vals formats sinusoid parameters."""
@@ -135,3 +139,12 @@ class TestUICallbacks:
         register_callbacks(app, sample_config)
         assert app.callbacks["toggle_sweep"](1, True) is False
         assert app.callbacks["toggle_sweep"](1, False) is True
+
+    def test_sweep_noise_changes_sigma(self, sample_config) -> None:
+        """6K.12: Sweep interval drives sigma through 0->1->0."""
+        from freq_extractor.services.ui_callbacks import register_callbacks
+        app = FakeApp()
+        register_callbacks(app, sample_config)
+        assert app.callbacks["sweep_noise"](0, False) == [0.0, 0.0, 0.0, 0.0]
+        assert app.callbacks["sweep_noise"](20, False) == [1.0, 1.0, 1.0, 1.0]
+        assert app.callbacks["sweep_noise"](40, False) == [0.0, 0.0, 0.0, 0.0]

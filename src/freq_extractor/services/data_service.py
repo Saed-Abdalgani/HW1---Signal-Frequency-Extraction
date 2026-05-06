@@ -76,12 +76,17 @@ class DatasetBuilder:
 
     @staticmethod
     def build_windows(
-        clean: np.ndarray, noisy: np.ndarray, freq: int, window_size: int,
+        clean: np.ndarray,
+        noisy: np.ndarray,
+        freq: int,
+        window_size: int,
+        noise_std_ratio: float = 0.0,
     ) -> list[dict[str, np.ndarray]]:
         """Create sliding-window entries with one-hot labels.
 
         Returns list of dicts with keys:
-        ``frequency_label``, ``noisy_samples``, ``clean_samples``, ``target_output``.
+        ``frequency_label``, ``noise_std_ratio``, ``noisy_samples``,
+        ``clean_samples``, ``target_output``.
         """
         n = len(clean)
         if window_size >= n:
@@ -92,6 +97,7 @@ class DatasetBuilder:
         for i in range(n - window_size):
             entries.append({
                 "frequency_label": one_hot.copy(),
+                "noise_std_ratio": np.array([noise_std_ratio], dtype=np.float32),
                 "noisy_samples": noisy[i : i + window_size].astype(np.float32),
                 "clean_samples": clean[i : i + window_size].astype(np.float32),
                 "target_output": np.array([clean[i + window_size]], dtype=np.float32),

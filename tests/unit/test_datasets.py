@@ -101,6 +101,7 @@ class TestDataLoader:
     def test_worker_init_fn(self) -> None:
         """_worker_init_fn seeds numpy and random based on torch seed."""
         import random
+
         import numpy as np
 
         torch.manual_seed(12345)

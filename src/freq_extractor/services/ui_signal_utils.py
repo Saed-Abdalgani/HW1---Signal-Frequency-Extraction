@@ -28,6 +28,19 @@ def apply_bpf(sig: np.ndarray, freq: float, bw: float, fs: float) -> np.ndarray:
     return sosfilt(sos, sig)
 
 
+def apply_filter(sig: np.ndarray, freq: float, bw: float, fs: float, mode: str) -> np.ndarray:
+    """Apply the selected per-component filter around *freq*."""
+    nyq = fs / 2
+    low, high = max(freq - bw / 2, 0.1), min(freq + bw / 2, nyq - 0.1)
+    if mode == "Bandpass":
+        return apply_bpf(sig, freq, bw, fs)
+    if mode == "Lowpass" and high < nyq:
+        return sosfilt(butter(4, high, btype="lowpass", fs=fs, output="sos"), sig)
+    if mode == "Highpass" and 0 < low < nyq:
+        return sosfilt(butter(4, low, btype="highpass", fs=fs, output="sos"), sig)
+    return sig
+
+
 def add_noise(sig: np.ndarray, noise_type: str, rng: np.random.Generator) -> np.ndarray:
     """Add global noise to signal based on type selection."""
     std = 0.2

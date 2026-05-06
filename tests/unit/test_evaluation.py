@@ -63,8 +63,9 @@ class TestPerFrequencyMSE:
 
     def test_missing_freq_subset(self, small_entries, sample_config) -> None:
         """compute_per_frequency_mse skips frequencies missing from entries."""
-        from freq_extractor.services.mlp_model import MLPModel
         import numpy as np
+
+        from freq_extractor.services.mlp_model import MLPModel
 
         model = MLPModel(window_size=10, hidden_sizes=[16, 32, 16])
         # Filter out first frequency class (index 0)

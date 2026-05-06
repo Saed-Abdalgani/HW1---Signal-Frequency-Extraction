@@ -1,29 +1,22 @@
-"""Dash callbacks for the Sinusoid Explorer — signals and controls.
-
-Registers header metrics, SIGNALS tab, and SWEEP NOISE callbacks.
-Analysis tab callbacks (T-SNE, PCA, FFT) are in ``ui_analysis.py``.
-Signal generation/processing utilities are in ``ui_signal_utils.py``.
-
-References
-----------
-- PRD FR-9
-"""
-
+"""Dash callbacks for the Sinusoid Explorer — signals and controls."""
 from __future__ import annotations
-
 from typing import Any
-
 import numpy as np
 import plotly.graph_objects as go
 from dash import Input, Output, State
-
 from freq_extractor.services.ui_analysis import register_analysis_callbacks
 from freq_extractor.services.ui_layout import SIN_COLOURS
 from freq_extractor.services.ui_signal_utils import (
     add_noise,
     apply_bpf,
+    apply_filter,
     gen_signal,
 )
+
+_add_noise = add_noise
+_apply_bpf = apply_bpf
+_apply_filter = apply_filter
+_gen_signal = gen_signal
 
 _DARK_LAYOUT = {
     "paper_bgcolor": "#0d1117", "plot_bgcolor": "#0d1117",
@@ -32,8 +25,6 @@ _DARK_LAYOUT = {
     "xaxis": {"gridcolor": "#1e2632", "zerolinecolor": "#1e2632"},
     "yaxis": {"gridcolor": "#1e2632", "zerolinecolor": "#1e2632"},
 }
-
-
 def _build_sin_inputs() -> list:
     """Build input list for 4 sinusoids (mix, bpf, freq, phase, amp, sigma)."""
     sin_inputs = []
@@ -44,7 +35,6 @@ def _build_sin_inputs() -> list:
             Input(f"amp-{i}", "value"), Input(f"sigma-{i}", "value"),
         ]
     return sin_inputs
-
 
 def register_callbacks(app: Any, config: dict[str, Any]) -> None:
     """Register all Dash callbacks on *app*."""
@@ -62,11 +52,23 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
     def update_metrics(fs, n_cyc, *freqs):
         fs = fs or 200
         n_cyc = n_cyc or 2
-        f_min = min(f for f in freqs if f and f > 0) if any(f and f > 0 for f in freqs) else 1
-        dur = n_cyc / f_min
+        min_freq = min(f for f in freqs if f and f > 0) if any(f and f > 0 for f in freqs) else 1
+        dur = n_cyc / min_freq
         n_samp = int(fs * dur)
+        f_res = fs / n_samp if n_samp else 0
         return (f" {fs} Hz", f" {n_cyc}", f" {dur:.2f}s",
-                f" {f_min:.1f} Hz", f" {n_samp}", f" {fs / 2:.1f} Hz")
+                f" {f_res:.2f} Hz", f" {n_samp}", f" {fs / 2:.1f} Hz")
+
+    @app.callback(
+        [Output(f"freq-{i}", "max") for i in range(1, 5)]
+        + [Output(f"freq-{i}", "value") for i in range(1, 5)],
+        Input("fs-slider", "value"),
+        [State(f"freq-{i}", "value") for i in range(1, 5)],
+    )
+    def constrain_freq_ranges(fs, *freqs):
+        nyquist = max((fs or 200) / 2, 0.1)
+        values = [min(freq or 0.1, nyquist) for freq in freqs]
+        return [nyquist] * 4 + values
 
     for i in range(1, 5):
         @app.callback(
@@ -99,7 +101,7 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
             if sigma and sigma > 0:
                 sig = sig + rng.normal(0, sigma, size=sig.shape)
             if bpf_v and "bpf" in bpf_v:
-                sig = apply_bpf(sig, freq, bw or 5, fs)
+                sig = apply_filter(sig, freq, bw or 5, fs, filt or "Bandpass")
 
             ind_fig.add_trace(go.Scatter(x=t, y=sig, mode=mode, name=f"Sin {i + 1}",
                 visible=True if (mix and "mix" in mix) else "legendonly",
@@ -134,4 +136,16 @@ def register_callbacks(app: Any, config: dict[str, Any]) -> None:
     def toggle_sweep(n_clicks, is_disabled):
         return not is_disabled
 
+    @app.callback(
+        [Output(f"sigma-{i}", "value") for i in range(1, 5)],
+        Input("sweep-interval", "n_intervals"),
+        State("sweep-interval", "disabled"),
+        prevent_initial_call=True,
+    )
+    def sweep_noise(n_intervals, is_disabled):
+        if is_disabled:
+            return [0.0] * 4
+        phase = (n_intervals or 0) % 40
+        sigma = phase / 20 if phase <= 20 else (40 - phase) / 20
+        return [round(sigma, 2)] * 4
     register_analysis_callbacks(app, all_inputs)

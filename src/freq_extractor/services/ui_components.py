@@ -20,7 +20,7 @@ def header_metrics() -> list:
     """Build the live header metrics bar."""
     items = []
     for mid, label in [("Fs", "FS:"), ("N-CYC", "N-CYC:"), ("T", "T:"),
-                        ("F_MIN", "F_MIN:"), ("N", "SAMPLES:"), ("NYQ", "NYQUIST:")]:
+                        ("F_MIN", "F_MIN:"), ("N", "h:"), ("NYQ", "NYQUIST:")]:
         items.append(html.Span([
             html.Span(label, className="metric-label"), html.Span("---", id=f"metric-{mid}"),
         ], className="metric-text"))
@@ -43,7 +43,7 @@ def global_controls(config: dict[str, Any]) -> html.Div:
         html.H4("GLOBAL PARAMETERS", className="sidebar-section-title"),
         _labeled_slider("Sampling Freq (Fs)", "fs-slider", min=10, max=2000, step=10, value=200),
         _labeled_slider("N-Cycles", "n-cycles", min=1, max=20, step=1, value=5),
-        _labeled_slider("BW (Hz)", "bw-slider", min=1, max=50, step=1, value=10),
+        _labeled_slider("BW (Hz)", "bw-slider", min=0.1, max=100, step=0.1, value=10),
         html.Div([
             html.Label("Display", className="slider-label", style={"width": "auto", "minWidth": "auto"}),
             dcc.RadioItems(id="display-toggle",
