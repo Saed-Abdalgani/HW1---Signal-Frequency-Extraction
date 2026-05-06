@@ -98,14 +98,15 @@ class TestUIService:
         svc = UIService(config=sample_config)
         called = False
 
-        def mock_run(self, port, debug):
+        def mock_run(self, port, debug, threaded=True, **_kw):
             nonlocal called
             called = True
             assert port == 1234
             assert debug is False
+            assert threaded is True
 
         monkeypatch.setattr(dash.Dash, "run", mock_run)
-        svc.launch_ui(port=1234)
+        svc.launch_ui(port=1234, debug=False)
         assert called
 
     def test_four_tabs_present(self, sample_config) -> None:

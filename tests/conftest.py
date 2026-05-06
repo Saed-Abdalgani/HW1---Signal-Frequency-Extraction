@@ -13,7 +13,7 @@ import numpy as np
 import pytest
 import torch
 
-from freq_extractor.constants import FREQUENCY_LABELS
+from freq_extractor.constants import FREQUENCY_INDEX, FREQUENCY_LABELS
 from freq_extractor.services.data_service import DatasetBuilder, SignalGenerator
 
 
@@ -58,7 +58,7 @@ def sample_config(tmp_path):
     return {
         "version": "1.00",
         "signal": {
-            "frequencies_hz": [5, 15, 30, 50],
+            "frequencies_hz": [2, 3, 4, 6],
             "amplitude": 1.0,
             "sampling_rate_hz": 200,
             "duration_seconds": 1.0,
@@ -96,7 +96,13 @@ def small_entries(signal_gen, rng):
     for f in FREQUENCY_LABELS:
         clean = signal_gen.generate_clean(float(f))
         noisy = signal_gen.generate_noisy(clean, 0.1, rng)
-        entries.extend(DatasetBuilder.build_windows(clean, noisy, f, 10))
+        entries.extend(
+            DatasetBuilder.build_windows(
+                clean, noisy, f, 10,
+                sigma=0.1,
+                class_index=FREQUENCY_INDEX[int(f)],
+            )
+        )
     return entries
 
 

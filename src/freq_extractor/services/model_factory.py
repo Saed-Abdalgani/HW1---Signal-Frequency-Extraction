@@ -16,7 +16,7 @@ from typing import Any
 
 from torch import nn
 
-from freq_extractor.constants import MODEL_TYPES
+from freq_extractor.constants import MODEL_TYPES, SEQ_INPUT_SIZE
 from freq_extractor.services.lstm_model import LSTMModel
 from freq_extractor.services.mlp_model import MLPModel
 from freq_extractor.services.rnn_model import RNNModel
@@ -78,12 +78,14 @@ class ModelFactory:
             )
         elif model_type == "rnn":
             model = RNNModel(
+                input_size=SEQ_INPUT_SIZE,
                 hidden_size=hidden_size,
                 num_layers=num_layers,
                 dropout=dropout,
             )
         else:  # lstm
             model = LSTMModel(
+                input_size=SEQ_INPUT_SIZE,
                 hidden_size=hidden_size,
                 num_layers=num_layers,
                 dropout=dropout,

@@ -1,6 +1,6 @@
 """Vanilla Recurrent Neural Network for frequency extraction.
 
-Architecture: 2-layer RNN (input_size=5, hidden=64, dropout=0.1)
+Architecture: 2-layer RNN (input_size=6, hidden=64, dropout=0.1)
 followed by a linear head that maps the final hidden state to a
 scalar prediction.  Recurrent weights are orthogonally initialised.
 
@@ -14,7 +14,7 @@ from __future__ import annotations
 import torch
 from torch import nn
 
-from freq_extractor.constants import NUM_CLASSES
+from freq_extractor.constants import SEQ_INPUT_SIZE
 
 
 class RNNModel(nn.Module):
@@ -23,7 +23,7 @@ class RNNModel(nn.Module):
     Parameters
     ----------
     input_size : int
-        Features per timestep (default ``1 + NUM_CLASSES = 5``).
+        Features per timestep (default ``SEQ_INPUT_SIZE``).
     hidden_size : int
         RNN hidden dimension (default 64).
     num_layers : int
@@ -34,7 +34,7 @@ class RNNModel(nn.Module):
 
     def __init__(
         self,
-        input_size: int = 1 + NUM_CLASSES,
+        input_size: int = SEQ_INPUT_SIZE,
         hidden_size: int = 64,
         num_layers: int = 2,
         dropout: float = 0.1,

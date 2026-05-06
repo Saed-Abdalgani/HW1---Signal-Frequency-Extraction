@@ -62,8 +62,8 @@ class TestPlotAnalysis:
     def test_per_frequency_mse(self, tmp_path, tmp_config_dir) -> None:
         """plot_per_frequency_mse saves a PNG."""
         results = {
-            "mlp": {5: 0.01, 15: 0.02, 30: 0.03, 50: 0.04},
-            "rnn": {5: 0.005, 15: 0.01, 30: 0.02, 50: 0.03},
+            "mlp": {2: 0.01, 3: 0.02, 4: 0.03, 6: 0.04},
+            "rnn": {2: 0.005, 3: 0.01, 4: 0.02, 6: 0.03},
         }
         path = tmp_path / "per_freq.png"
         plot_per_frequency_mse(results, path)

@@ -73,6 +73,11 @@ def _build_parser() -> argparse.ArgumentParser:
         "--port", type=int, default=8050,
         help="Port for the UI dashboard (default: 8050).",
     )
+    parser.add_argument(
+        "--no-reload",
+        action="store_true",
+        help="Disable Dash debug reloader/hot reload (use with --mode ui).",
+    )
     return parser
 
 
@@ -116,7 +121,7 @@ def _dispatch(args: argparse.Namespace) -> None:
             print(f"[{mt.upper()}] test_mse={metrics['test']:.6f}")
 
     elif args.mode == "ui":
-        sdk.launch_ui(port=args.port)
+        sdk.launch_ui(port=args.port, debug=not args.no_reload)
 
 
 def main() -> None:
@@ -124,7 +129,7 @@ def main() -> None:
     parser = _build_parser()
     args = parser.parse_args()
     _validate_args(args)
-    logger.info("CLI started — mode=%s, model=%s, seed=%s", args.mode, args.model, args.seed)
+    logger.info("CLI started - mode=%s, model=%s, seed=%s", args.mode, args.model, args.seed)
     _dispatch(args)
     logger.info("CLI finished.")
 

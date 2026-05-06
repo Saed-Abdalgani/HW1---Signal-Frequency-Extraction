@@ -71,7 +71,7 @@ def save_checkpoint(
         torch.save(payload, str(path))
 
     get_gatekeeper("checkpoint").execute(_do_save)
-    logger.info("Checkpoint saved → %s (epoch %d, val_mse=%.6f)", path, epoch, val_mse)
+    logger.info("Checkpoint saved -> %s (epoch %d, val_mse=%.6f)", path, epoch, val_mse)
     return path
 
 
@@ -116,7 +116,7 @@ def load_checkpoint(
         optimizer.load_state_dict(ckpt["optimizer_state_dict"])
 
     logger.info(
-        "Checkpoint loaded ← %s (epoch %d, val_mse=%.6f)",
+        "Checkpoint loaded <- %s (epoch %d, val_mse=%.6f)",
         path, ckpt["epoch"], ckpt["val_mse"],
     )
     return ckpt

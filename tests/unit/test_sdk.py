@@ -13,7 +13,7 @@ class _FakeModel(nn.Module):
 
     def __init__(self) -> None:
         super().__init__()
-        self.layer = nn.Linear(14, 1)
+        self.layer = nn.Linear(15, 1)
         self.requested_devices: list[torch.device] = []
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -89,10 +89,10 @@ def test_sdk_launch_ui(monkeypatch) -> None:
     from freq_extractor.services.ui_service import UIService
     
     called_port = None
-    def mock_launch_ui(self, port=8050):
+    def mock_launch_ui(self, port=8050, debug=True, **_kw):
         nonlocal called_port
         called_port = port
-        
+
     monkeypatch.setattr(UIService, "launch_ui", mock_launch_ui)
     sdk = FreqExtractorSDK(config={"dataset": {"seed": 123}})
     sdk.launch_ui(port=1234)

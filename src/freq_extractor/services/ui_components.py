@@ -42,7 +42,7 @@ def global_controls(config: dict[str, Any]) -> html.Div:
     return html.Div([
         html.H4("GLOBAL PARAMETERS", className="sidebar-section-title"),
         _labeled_slider("Sampling Freq (Fs)", "fs-slider", min=10, max=2000, step=10, value=200),
-        _labeled_slider("N-Cycles", "n-cycles", min=1, max=20, step=1, value=5),
+        _labeled_slider("N-Cycles", "n-cycles", min=1, max=10, step=1, value=3),
         _labeled_slider("BW (Hz)", "bw-slider", min=1, max=50, step=1, value=10),
         html.Div([
             html.Label("Display", className="slider-label", style={"width": "auto", "minWidth": "auto"}),
@@ -61,11 +61,15 @@ def global_controls(config: dict[str, Any]) -> html.Div:
             html.Label("Filter", className="slider-label", style={"width": "auto", "minWidth": "auto"}),
             html.Div(dcc.Dropdown(id="filter-dropdown",
                 options=[{"label": f, "value": f} for f in ["None", "Bandpass", "Lowpass", "Highpass"]],
-                value="Bandpass", clearable=False, className="custom-dropdown",
+                value="None", clearable=False, className="custom-dropdown",
                 style={"width": "160px", "fontSize": "11px"}), style={"marginLeft": "auto"}),
         ], className="slider-row", style={"marginTop": "10px"}),
-        html.Button("► SWEEP NOISE", id="sweep-btn", className="sweep-btn"),
-        dcc.Interval(id="sweep-interval", interval=100, disabled=True, n_intervals=0),
+        html.Button(
+            "► SWEEP NOISE",
+            id="sweep-btn",
+            className="sweep-btn",
+            title="Set σ to 0 for Sin 1–4 (per-channel noise sliders)",
+        ),
     ], className="control-block")
 
 
@@ -81,8 +85,11 @@ def _sin_slider(label, sid, c, val_id, **kw):
 def _sin_control(n: int) -> html.Div:
     """Build per-sinusoid control block for Sin *n* (1-indexed)."""
     c = SIN_COLOURS[n - 1]
-    freqs, amps = [5.0, 5.0, 5.0, 5.0], [1.0, 0.8, 0.5, 0.2]
-    mixes = [True, True, True, False]
+    freqs = [1.0, 2.5, 4.0, 6.0]
+    phases = [0.0, 0.0, 0.0, 0.0]
+    amps = [1.0, 0.85, 0.55, 0.35]
+    sigmas = [0.0, 0.0, 0.0, 0.0]
+    mixes = [True, True, True, True]
     return html.Div([
         html.Div([
             html.Div(className="color-dot", style={"backgroundColor": c, "boxShadow": f"0 0 8px {c}"}),
@@ -92,10 +99,10 @@ def _sin_control(n: int) -> html.Div:
             dcc.Checklist(id=f"bpf-{n}", options=[{"label": "BPF", "value": "bpf"}],
                 value=[], inline=True, className="sin-checkbox"),
         ], className="sin-header"),
-        _sin_slider("f", f"freq-{n}", c, f"f-val-{n}", min=0.1, max=100, step=0.1, value=freqs[n - 1]),
-        _sin_slider("φ", f"phase-{n}", c, f"phi-val-{n}", min=0, max=6.28, step=0.01, value=0.0),
+        _sin_slider("f", f"freq-{n}", c, f"f-val-{n}", min=0.1, max=6.9, step=0.1, value=freqs[n - 1]),
+        _sin_slider("φ", f"phase-{n}", c, f"phi-val-{n}", min=0, max=6.28, step=0.01, value=phases[n - 1]),
         _sin_slider("A", f"amp-{n}", c, f"a-val-{n}", min=0, max=2.0, step=0.01, value=amps[n - 1]),
-        _sin_slider("σ", f"sigma-{n}", c, f"sig-val-{n}", min=0, max=1.0, step=0.01, value=0.0),
+        _sin_slider("σ", f"sigma-{n}", c, f"sig-val-{n}", min=0, max=1.0, step=0.01, value=sigmas[n - 1]),
     ], className=f"control-block sin-block-{n}")
 
 

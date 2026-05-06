@@ -18,7 +18,7 @@ class TestLSTMModel:
     def test_forward_shape(self) -> None:
         """LSTM-T1: Forward pass (B=32, T=10) → (32, 1), no NaN."""
         model = LSTMModel(hidden_size=64, num_layers=2)
-        x = torch.randn(32, 10, 5)
+        x = torch.randn(32, 10, 6)
         out = model(x)
         assert out.shape == (32, 1)
         assert torch.isfinite(out).all()
@@ -28,7 +28,7 @@ class TestLSTMModel:
         model = LSTMModel(hidden_size=64, num_layers=2)
         assert model.hidden_size == 64
         assert model.num_layers == 2
-        x = torch.randn(4, 10, 5)
+        x = torch.randn(4, 10, 6)
         out = model(x)
         assert out.shape == (4, 1)
 
@@ -50,7 +50,7 @@ class TestLSTMModel:
     def test_gradients_flow(self) -> None:
         """LSTM-T5: Gradients flow through all 4 gate matrices."""
         model = LSTMModel(hidden_size=64, num_layers=2)
-        x = torch.randn(8, 10, 5)
+        x = torch.randn(8, 10, 6)
         out = model(x)
         out.sum().backward()
         for name, param in model.named_parameters():
@@ -60,7 +60,7 @@ class TestLSTMModel:
     def test_eval_mode_deterministic(self) -> None:
         """LSTM-T6: Eval mode produces identical outputs on repeated calls."""
         model = LSTMModel(hidden_size=64, num_layers=2, dropout=0.5)
-        x = torch.randn(8, 10, 5)
+        x = torch.randn(8, 10, 6)
         model.eval()
         with torch.no_grad():
             out1 = model(x)
@@ -80,6 +80,6 @@ class TestLSTMModel:
     def test_batch_size_one(self) -> None:
         """Batch size 1 works correctly."""
         model = LSTMModel(hidden_size=64, num_layers=2)
-        x = torch.randn(1, 10, 5)
+        x = torch.randn(1, 10, 6)
         out = model(x)
         assert out.shape == (1, 1)

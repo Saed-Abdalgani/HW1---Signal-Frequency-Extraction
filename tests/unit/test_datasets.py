@@ -26,10 +26,10 @@ class TestMLPDataset:
         assert len(ds) == len(small_entries)
 
     def test_item_shapes(self, small_entries) -> None:
-        """X has shape (14,), y has shape (1,)."""
+        """X has shape (15,), y has shape (1,)."""
         ds = MLPDataset(small_entries)
         x, y = ds[0]
-        assert x.shape == (10 + NUM_CLASSES,)
+        assert x.shape == (10 + NUM_CLASSES + 1,)
         assert y.shape == (1,)
 
     def test_dtype(self, small_entries) -> None:
@@ -56,10 +56,10 @@ class TestSequentialDataset:
         assert len(ds) == len(small_entries)
 
     def test_item_shapes(self, small_entries) -> None:
-        """X has shape (10, 5), y has shape (1,)."""
+        """X has shape (10, 6), y has shape (1,)."""
         ds = SequentialDataset(small_entries)
         x, y = ds[0]
-        assert x.shape == (10, 1 + NUM_CLASSES)
+        assert x.shape == (10, 1 + NUM_CLASSES + 1)
         assert y.shape == (1,)
 
     def test_dtype(self, small_entries) -> None:
@@ -79,7 +79,7 @@ class TestDataLoader:
         loader = create_dataloader(ds, batch_size=16, shuffle=True, seed=42)
         batch_x, batch_y = next(iter(loader))
         assert batch_x.shape[0] <= 16
-        assert batch_x.shape[1] == 14
+        assert batch_x.shape[1] == 15
 
     def test_deterministic_order(self, small_entries) -> None:
         """Same seed → same batch order."""

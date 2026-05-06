@@ -1,8 +1,8 @@
 """Fully Connected Multi-Layer Perceptron for frequency extraction.
 
-Architecture: 14 → 64 → 128 → 64 → 1 with Tanh activations.
-The MLP treats the 10-sample sliding window as a flat feature vector
-concatenated with a 4-dim one-hot frequency label (total input = 14).
+Architecture: 15 → 64 → 128 → 64 → 1 with Tanh activations.
+The MLP concatenates the noisy window, one-hot label, and sigma (total
+``window_size + NUM_CLASSES + 1`` inputs).
 
 References
 ----------
@@ -14,7 +14,7 @@ from __future__ import annotations
 import torch
 from torch import nn
 
-from freq_extractor.constants import NUM_CLASSES
+from freq_extractor.constants import MLP_EXTRA_FEATURES
 
 
 class MLPModel(nn.Module):
@@ -43,7 +43,7 @@ class MLPModel(nn.Module):
         if hidden_sizes is None:
             hidden_sizes = [64, 128, 64]
 
-        input_dim = window_size + NUM_CLASSES  # 10 + 4 = 14
+        input_dim = window_size + MLP_EXTRA_FEATURES
 
         layers: list[nn.Module] = []
         prev_dim = input_dim
@@ -61,7 +61,7 @@ class MLPModel(nn.Module):
         Parameters
         ----------
         x : torch.Tensor
-            Input tensor of shape ``(B, window_size + NUM_CLASSES)``.
+            Input tensor of shape ``(B, window_size + MLP_EXTRA_FEATURES)``.
 
         Returns
         -------

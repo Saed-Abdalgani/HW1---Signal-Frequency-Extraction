@@ -47,8 +47,8 @@ body {
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
+  min-height: 0;
+  overflow: hidden;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -71,6 +71,12 @@ body {
 .sidebar-title-block {
   padding: 16px 20px;
   border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+/* GLOBAL PARAMETERS sits above the independently scrollable sinusoid list */
+.sidebar > .control-block {
+  flex-shrink: 0;
 }
 
 .sidebar-title-block h1 {
@@ -223,8 +229,11 @@ body .sin-block-4 .rc-slider-handle-1 {
    Sinusoid Per-Channel Controls
    ═══════════════════════════════════════════ */
 .sin-controls-area {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   background-color: #0a0d12;
 }
 
@@ -238,15 +247,19 @@ body .sin-block-4 .rc-slider-handle-1 {
 }
 
 [class*="sin-block-"] {
-  padding: 16px 20px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border-subtle);
   margin-bottom: 0;
+  scroll-margin-top: 8px;
 }
 
 .sin-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 14px;
+  row-gap: 6px;
+  column-gap: 4px;
+  margin-bottom: 10px;
 }
 
 .color-dot {
@@ -265,6 +278,11 @@ body .sin-block-4 .rc-slider-handle-1 {
 
 .sin-checkbox {
   margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.sin-header .sin-checkbox {
+  margin-left: 4px;
 }
 
 .sin-checkbox label {

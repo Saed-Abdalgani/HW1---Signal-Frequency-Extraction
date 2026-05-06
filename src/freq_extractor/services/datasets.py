@@ -24,8 +24,8 @@ from freq_extractor.constants import TENSOR_DTYPE
 class MLPDataset(Dataset):
     """PyTorch Dataset for the MLP architecture.
 
-    Each sample concatenates ``[noisy_samples ‖ frequency_label]`` into a
-    14-dimensional input vector paired with a scalar target.
+    Each sample concatenates noisy window, one-hot label, and sigma into a
+    flat input vector paired with a scalar target.
 
     Parameters
     ----------
@@ -42,15 +42,16 @@ class MLPDataset(Dataset):
         return len(self.entries)
 
     def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
-        """Return ``(X[14], y[1])`` for the given index.
+        """Return ``(X[15], y[1])`` for the given index.
 
         Returns
         -------
         tuple[torch.Tensor, torch.Tensor]
-            Input features ``(window_size + NUM_CLASSES,)`` and target ``(1,)``.
+            Input ``(window_size + NUM_CLASSES + 1,)`` and target ``(1,)``.
         """
         e = self.entries[idx]
-        x = np.concatenate([e["noisy_samples"], e["frequency_label"]])
+        sig = np.array([np.float32(e["sigma"])], dtype=np.float32)
+        x = np.concatenate([e["noisy_samples"], e["frequency_label"], sig])
         return (
             torch.tensor(x, dtype=TENSOR_DTYPE),
             torch.tensor(e["target_output"], dtype=TENSOR_DTYPE),
@@ -60,9 +61,8 @@ class MLPDataset(Dataset):
 class SequentialDataset(Dataset):
     """PyTorch Dataset for RNN / LSTM architectures.
 
-    Each sample reshapes the noisy window into a ``(T, 1+NUM_CLASSES)``
-    tensor where every timestep carries the sample value and the
-    frequency one-hot label.
+        Each timestep stacks sample value, frequency one-hot, and sigma
+        (``1 + NUM_CLASSES + 1`` features per step).
 
     Parameters
     ----------
@@ -84,15 +84,16 @@ class SequentialDataset(Dataset):
         Returns
         -------
         tuple[torch.Tensor, torch.Tensor]
-            Sequence input ``(window_size, 5)`` and target ``(1,)``.
+            Sequence input ``(window_size, 1 + NUM_CLASSES + 1)`` and target ``(1,)``.
         """
         e = self.entries[idx]
         noisy = e["noisy_samples"]  # shape (window_size,)
         label = e["frequency_label"]  # shape (NUM_CLASSES,)
-        # Stack: each timestep → [sample_t, one_hot_0, ..., one_hot_3]
+        sig_col = np.full((len(noisy), 1), np.float32(e["sigma"]), dtype=np.float32)
         seq = np.column_stack([
             noisy.reshape(-1, 1),
             np.tile(label, (len(noisy), 1)),
+            sig_col,
         ])
         return (
             torch.tensor(seq, dtype=TENSOR_DTYPE),

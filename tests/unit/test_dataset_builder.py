@@ -1,7 +1,4 @@
-"""Tests for DatasetBuilder — SG-T3, SG-T6, SG-T8.
-
-Validates sliding-window count, one-hot encoding, and window-size edge cases.
-"""
+"""Tests for DatasetBuilder — SG-T3, SG-T6, SG-T8."""
 
 from __future__ import annotations
 
@@ -16,10 +13,12 @@ class TestDatasetBuilder:
     """Sliding-window dataset construction tests."""
 
     def test_window_count(self, signal_gen: SignalGenerator) -> None:
-        """SG-T3: Sliding window of 10 on 200-sample signal → 190 entries."""
-        clean = signal_gen.generate_clean(15.0)
+        """SG-T3: Sliding window of 10 on 200-sample signal yields n-10 entries."""
+        clean = signal_gen.generate_clean(3.0)
         noisy = clean.copy()
-        entries = DatasetBuilder.build_windows(clean, noisy, 15, 10)
+        entries = DatasetBuilder.build_windows(
+            clean, noisy, 3, 10, sigma=0.0, class_index=FREQUENCY_INDEX[3],
+        )
         expected = len(clean) - 10
         assert len(entries) == expected
 
@@ -27,7 +26,10 @@ class TestDatasetBuilder:
         """SG-T8: One-hot label sums to 1 and argmax matches frequency index."""
         for freq in FREQUENCY_LABELS:
             clean = signal_gen.generate_clean(float(freq))
-            entries = DatasetBuilder.build_windows(clean, clean, freq, 10)
+            entries = DatasetBuilder.build_windows(
+                clean, clean, freq, 10,
+                sigma=0.0, class_index=FREQUENCY_INDEX[freq],
+            )
             for e in entries[:5]:
                 label = e["frequency_label"]
                 assert label.shape == (NUM_CLASSES,)
@@ -35,32 +37,42 @@ class TestDatasetBuilder:
                 assert np.argmax(label) == FREQUENCY_INDEX[freq]
 
     def test_entry_shapes(self, signal_gen: SignalGenerator) -> None:
-        """Each entry has correct shapes for all 4 keys."""
-        clean = signal_gen.generate_clean(5.0)
-        entries = DatasetBuilder.build_windows(clean, clean, 5, 10)
+        """Each entry has class_index, sigma, and sample tensors."""
+        clean = signal_gen.generate_clean(2.0)
+        entries = DatasetBuilder.build_windows(
+            clean, clean, 2, 10, sigma=0.05, class_index=FREQUENCY_INDEX[2],
+        )
         e = entries[0]
         assert e["noisy_samples"].shape == (10,)
         assert e["clean_samples"].shape == (10,)
         assert e["target_output"].shape == (1,)
         assert e["frequency_label"].shape == (NUM_CLASSES,)
+        assert int(e["class_index"]) == FREQUENCY_INDEX[2]
+        assert abs(float(e["sigma"]) - 0.05) < 1e-6
 
     def test_target_is_next_clean_sample(self, signal_gen: SignalGenerator) -> None:
         """Target output equals the next clean sample after the window."""
-        clean = signal_gen.generate_clean(15.0)
-        entries = DatasetBuilder.build_windows(clean, clean, 15, 10)
+        clean = signal_gen.generate_clean(4.0)
+        entries = DatasetBuilder.build_windows(
+            clean, clean, 4, 10, sigma=0.0, class_index=FREQUENCY_INDEX[4],
+        )
         for i, e in enumerate(entries[:10]):
             assert abs(e["target_output"][0] - clean[i + 10]) < 1e-6
 
     def test_window_too_large_raises(self, signal_gen: SignalGenerator) -> None:
         """SG-T6: window_size >= signal length raises ValueError."""
-        clean = signal_gen.generate_clean(5.0)
+        clean = signal_gen.generate_clean(2.0)
         with pytest.raises(ValueError, match="window_size"):
-            DatasetBuilder.build_windows(clean, clean, 5, len(clean))
+            DatasetBuilder.build_windows(
+                clean, clean, 2, len(clean), sigma=0.0, class_index=FREQUENCY_INDEX[2],
+            )
 
     def test_float32_dtype(self, signal_gen: SignalGenerator) -> None:
-        """All array values are float32."""
-        clean = signal_gen.generate_clean(5.0)
-        entries = DatasetBuilder.build_windows(clean, clean, 5, 10)
+        """All array values are float32 (class_index int32)."""
+        clean = signal_gen.generate_clean(2.0)
+        entries = DatasetBuilder.build_windows(
+            clean, clean, 2, 10, sigma=0.1, class_index=FREQUENCY_INDEX[2],
+        )
         e = entries[0]
         assert e["noisy_samples"].dtype == np.float32
         assert e["clean_samples"].dtype == np.float32

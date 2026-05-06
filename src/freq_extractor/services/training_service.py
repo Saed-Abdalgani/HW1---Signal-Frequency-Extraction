@@ -1,14 +1,4 @@
-"""Training service — training loop and LR scheduling.
-
-Orchestrates the full training pipeline for any model type: per-epoch
-train/validate loop with gradient clipping, ``ReduceLROnPlateau``
-scheduling, early stopping with best-weight restoration, and structured
-per-epoch logging.
-
-References
-----------
-- PRD FR-6, PRD_tr §§2–8
-"""
+"""Training service — full training loop with LR schedule and early stop."""
 
 from __future__ import annotations
 
@@ -20,78 +10,12 @@ from torch import nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 
+from freq_extractor.services.training_batches import evaluate, train_one_epoch
 from freq_extractor.services.training_helpers import EarlyStopping, set_all_seeds
 
 logger = logging.getLogger("freq_extractor.training")
 
-# Re-export for backward compat
 __all__ = ["EarlyStopping", "set_all_seeds", "train_one_epoch", "evaluate", "train"]
-
-
-def _module_device(model: nn.Module) -> torch.device:
-    """Return the device used by the model parameters."""
-    return next(model.parameters(), torch.empty(0)).device
-
-
-def train_one_epoch(
-    model: nn.Module,
-    loader: DataLoader,
-    optimizer: torch.optim.Optimizer,
-    criterion: nn.Module,
-    grad_clip: float = 1.0,
-) -> float:
-    """Run one training epoch.
-
-    Returns
-    -------
-    float
-        Mean training loss for the epoch.
-    """
-    model.train()
-    device = _module_device(model)
-    total_loss = 0.0
-    n_batches = 0
-    for x_batch, y_batch in loader:
-        x_batch = x_batch.to(device)
-        y_batch = y_batch.to(device)
-        optimizer.zero_grad()
-        pred = model(x_batch)
-        loss = criterion(pred, y_batch)
-        loss.backward()
-        nn.utils.clip_grad_norm_(model.parameters(), max_norm=grad_clip)
-        optimizer.step()
-        total_loss += loss.item()
-        n_batches += 1
-    if n_batches == 0:
-        raise ValueError("DataLoader is empty — cannot train on zero batches.")
-    return total_loss / n_batches
-
-
-def evaluate(
-    model: nn.Module,
-    loader: DataLoader,
-    criterion: nn.Module,
-) -> float:
-    """Evaluate model on a data loader (no gradient computation).
-
-    Returns
-    -------
-    float
-        Mean loss over all batches.
-    """
-    model.eval()
-    device = _module_device(model)
-    total_loss = 0.0
-    n_batches = 0
-    with torch.no_grad():
-        for x_batch, y_batch in loader:
-            x_batch = x_batch.to(device)
-            y_batch = y_batch.to(device)
-            pred = model(x_batch)
-            loss = criterion(pred, y_batch)
-            total_loss += loss.item()
-            n_batches += 1
-    return total_loss / max(n_batches, 1)
 
 
 def train(
@@ -101,14 +25,7 @@ def train(
     config: dict[str, Any],
     model_type: str = "model",
 ) -> dict[str, Any]:
-    """Full training pipeline with early stopping and LR scheduling.
-
-    Returns
-    -------
-    dict
-        Training history with keys ``train_losses``, ``val_losses``,
-        ``best_epoch``, ``best_val_mse``.
-    """
+    """Train with early stopping, LR reduction, and checkpoint save."""
     from freq_extractor.services.checkpoint import save_checkpoint
 
     tc = config["training"]

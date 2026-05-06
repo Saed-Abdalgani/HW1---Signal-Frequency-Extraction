@@ -53,7 +53,7 @@ class TestSetupValidation:
         """DV.6: sampling_rate must satisfy Nyquist at startup."""
         path = tmp_config_dir / "setup.json"
         cfg = json.loads(path.read_text())
-        cfg["signal"]["sampling_rate_hz"] = 50
+        cfg["signal"]["sampling_rate_hz"] = 10
         path.write_text(json.dumps(cfg))
         clear_cache()
         with pytest.raises(ValueError, match="Nyquist"):

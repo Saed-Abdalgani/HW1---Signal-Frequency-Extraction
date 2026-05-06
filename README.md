@@ -240,6 +240,8 @@ uv run python src/main.py --mode ui --port 8050
 ```
 Open your browser to `http://localhost:8050` to interact with real-time signal processing, noise injection, and 3D T-SNE/PCA visualisations.
 
+**UI note:** Sin 1–4 each have a **MIX** checkbox, and **all four default to checked** (Sin 4 is included by default). The list of sinusoid channels lives in the **scrollable strip** directly under GLOBAL PARAMETERS — on shorter windows, scroll that panel downward to reveal Sin 4.
+
 ---
 
 ## 16. Configuration Guide

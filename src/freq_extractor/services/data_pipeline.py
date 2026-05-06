@@ -17,7 +17,7 @@ from typing import Any
 
 import numpy as np
 
-from freq_extractor.constants import NPZ_EXT
+from freq_extractor.constants import FREQUENCY_INDEX, NPZ_EXT
 from freq_extractor.services.data_service import DatasetBuilder, SignalGenerator
 from freq_extractor.services.data_transforms import DataNormalizer, DatasetSplitter
 from freq_extractor.shared import get_gatekeeper
@@ -80,7 +80,14 @@ def build_full_dataset(
         phase = rng.uniform(0, 2 * np.pi)
         clean = gen.generate_clean(float(f), phase)
         noisy = gen.generate_noisy(clean, sig["noise_std_ratio"], rng)
-        entries = DatasetBuilder.build_windows(clean, noisy, f, sig["window_size"])
+        entries = DatasetBuilder.build_windows(
+            clean,
+            noisy,
+            f,
+            sig["window_size"],
+            sigma=float(sig["noise_std_ratio"]),
+            class_index=int(FREQUENCY_INDEX[f]),
+        )
         all_entries.extend(entries)
 
     train, val, test = DatasetSplitter.split(

@@ -24,14 +24,20 @@ MODEL_TYPES: tuple[str, ...] = ("mlp", "rnn", "lstm")
 # Signal / dataset
 # ---------------------------------------------------------------------------
 
-FREQUENCY_LABELS: tuple[int, ...] = (5, 15, 30, 50)
-"""Default frequencies in Hz — one class each; must match config/setup.json."""
+FREQUENCY_LABELS: tuple[int, ...] = (2, 3, 4, 6)
+"""Default frequencies in Hz (each < 7); must match config/setup.json."""
 
 FREQUENCY_INDEX: dict[int, int] = {f: i for i, f in enumerate(FREQUENCY_LABELS)}
 """Maps frequency (Hz) → one-hot class index."""
 
 NUM_CLASSES: int = len(FREQUENCY_LABELS)
 """Number of frequency classes (== one-hot vector length)."""
+
+SEQ_INPUT_SIZE: int = 1 + NUM_CLASSES + 1
+"""RNN/LSTM features per timestep: sample, one-hot label, sigma."""
+
+MLP_EXTRA_FEATURES: int = NUM_CLASSES + 1
+"""One-hot plus sigma concatenated after noisy window for MLP."""
 
 SPLIT_NAMES: tuple[str, ...] = ("train", "val", "test")
 """Dataset split identifiers in their standard processing order."""
@@ -63,7 +69,7 @@ PT_EXT: str = ".pt"
 MIN_PLOT_DPI: int = 150
 """Minimum DPI for all saved result figures (PRD §15)."""
 
-MODEL_CHECKPOINT_VERSION: str = "1.00"
+MODEL_CHECKPOINT_VERSION: str = "1.01"
 """Schema version tag stored in every checkpoint file (PLAN §5)."""
 
 # ---------------------------------------------------------------------------
@@ -93,6 +99,7 @@ __all__ = [
     "FREQUENCY_INDEX",
     "FREQUENCY_LABELS",
     "MIN_PLOT_DPI",
+    "MLP_EXTRA_FEATURES",
     "MODEL_CHECKPOINT_VERSION",
     "MODEL_TYPES",
     "NOISE_TYPES",
@@ -100,6 +107,7 @@ __all__ = [
     "NUM_CLASSES",
     "NUM_SINUSOIDS",
     "PT_EXT",
+    "SEQ_INPUT_SIZE",
     "SPLIT_NAMES",
     "TENSOR_DTYPE",
 ]

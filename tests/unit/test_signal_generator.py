@@ -17,16 +17,18 @@ class TestSignalGeneratorClean:
     """Clean signal generation tests."""
 
     def test_fft_peak_matches_frequency(self, signal_gen: SignalGenerator) -> None:
-        """SG-T1: FFT dominant frequency matches configured 15 Hz."""
-        sig = signal_gen.generate_clean(15.0)
+        """SG-T1: FFT dominant frequency matches a configured class frequency."""
+        sig = signal_gen.generate_clean(4.0)
         freqs = rfftfreq(len(sig), d=1.0 / signal_gen.fs)
         magnitudes = np.abs(rfft(sig))
         dominant = freqs[np.argmax(magnitudes)]
-        assert abs(dominant - 15.0) < 0.5, f"Expected ~15 Hz, got {dominant}"
+        assert abs(dominant - 4.0) < 0.5, f"Expected ~4 Hz, got {dominant}"
 
     def test_fft_peak_all_frequencies(self, signal_gen: SignalGenerator) -> None:
         """SG-T1 extended: verify FFT peak for all 4 configured frequencies."""
-        for freq in [5, 15, 30, 50]:
+        from freq_extractor.constants import FREQUENCY_LABELS
+
+        for freq in FREQUENCY_LABELS:
             sig = signal_gen.generate_clean(float(freq))
             freqs_ax = rfftfreq(len(sig), d=1.0 / signal_gen.fs)
             dominant = freqs_ax[np.argmax(np.abs(rfft(sig)))]
@@ -39,7 +41,7 @@ class TestSignalGeneratorClean:
 
     def test_amplitude_bounded(self, signal_gen: SignalGenerator) -> None:
         """Peak amplitude does not exceed configured amplitude."""
-        sig = signal_gen.generate_clean(30.0)
+        sig = signal_gen.generate_clean(6.0)
         assert np.max(np.abs(sig)) <= signal_gen.amplitude + 1e-6
 
 

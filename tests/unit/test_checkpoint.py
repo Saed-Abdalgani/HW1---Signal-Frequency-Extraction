@@ -33,7 +33,7 @@ class TestCheckpoint:
         sample_config["training"]["checkpoint_dir"] = str(tmp_path / "ckpts")
         model = MLPModel(window_size=10, hidden_sizes=[16, 32, 16])
         opt = torch.optim.Adam(model.parameters())
-        x = torch.randn(4, 14)
+        x = torch.randn(4, 15)
         with torch.no_grad():
             out1 = model(x).clone()
         path = save_checkpoint(model, opt, 3, 0.02, "mlp", sample_config)
@@ -65,7 +65,7 @@ class TestCheckpoint:
         sample_config["training"]["checkpoint_dir"] = str(tmp_path / "ckpts")
         model = MLPModel(window_size=10, hidden_sizes=[16, 32, 16])
         opt = torch.optim.Adam(model.parameters(), lr=0.005)
-        x = torch.randn(4, 14)
+        x = torch.randn(4, 15)
         loss = model(x).sum()
         loss.backward()
         opt.step()

@@ -72,10 +72,16 @@ def plot_predictions(
         for e in entries[:n_examples]:
             ns = e["noisy_samples"]
             fl = e["frequency_label"]
+            sig = np.array([np.float32(e["sigma"])], dtype=np.float32)
             if model_type == "mlp":
-                x = torch.tensor(np.concatenate([ns, fl]), dtype=torch.float32).unsqueeze(0)
+                x = torch.tensor(
+                    np.concatenate([ns, fl, sig]), dtype=torch.float32,
+                ).unsqueeze(0)
             else:
-                seq = np.column_stack([ns.reshape(-1, 1), np.tile(fl, (len(ns), 1))])
+                sig_col = np.full((len(ns), 1), np.float32(e["sigma"]), dtype=np.float32)
+                seq = np.column_stack([
+                    ns.reshape(-1, 1), np.tile(fl, (len(ns), 1)), sig_col,
+                ])
                 x = torch.tensor(seq, dtype=torch.float32).unsqueeze(0)
             preds.append(model(x).item())
             targets.append(e["target_output"][0])

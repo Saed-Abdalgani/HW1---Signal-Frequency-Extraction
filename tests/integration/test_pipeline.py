@@ -66,10 +66,10 @@ class TestEndToEnd:
         sample_config["training"]["early_stop_patience"] = 1
         sample_config["training"]["checkpoint_dir"] = str(ckpt_dir)
         train_loader = DataLoader(
-            TensorDataset(torch.randn(64, 14), torch.randn(64, 1)), batch_size=32,
+            TensorDataset(torch.randn(64, 15), torch.randn(64, 1)), batch_size=32,
         )
         val_loader = DataLoader(
-            TensorDataset(torch.randn(32, 14), torch.randn(32, 1)), batch_size=32,
+            TensorDataset(torch.randn(32, 15), torch.randn(32, 1)), batch_size=32,
         )
         model = ModelFactory.create_model("mlp", sample_config)
         train(model, train_loader, val_loader, sample_config, model_type="mlp")

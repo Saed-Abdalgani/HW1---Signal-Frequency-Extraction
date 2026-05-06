@@ -33,9 +33,10 @@ class TestDataPipeline:
         assert {id(e) for e in val}.isdisjoint({id(e) for e in test})
         for entry in train + val + test:
             for key in ("noisy_samples", "clean_samples", "target_output",
-                        "frequency_label"):
+                        "frequency_label", "sigma"):
                 assert entry[key].dtype == np.float32
                 assert np.isfinite(entry[key]).all()
+            assert int(entry["class_index"]) in range(4)
             assert np.sum(entry["frequency_label"]) == 1.0
 
     def test_reproducibility(self, sample_config, tmp_config_dir) -> None:

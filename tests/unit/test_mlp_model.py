@@ -19,7 +19,7 @@ class TestMLPModel:
     def test_forward_shape_batch32(self) -> None:
         """MLP-T1: Forward pass (B=32) → output shape (32, 1), no NaN."""
         model = MLPModel(window_size=10, hidden_sizes=[64, 128, 64])
-        x = torch.randn(32, 14)
+        x = torch.randn(32, 15)
         out = model(x)
         assert out.shape == (32, 1)
         assert torch.isfinite(out).all()
@@ -27,21 +27,21 @@ class TestMLPModel:
     def test_forward_batch1(self) -> None:
         """MLP-T2: Batch size 1 works without crash."""
         model = MLPModel(window_size=10)
-        x = torch.randn(1, 14)
+        x = torch.randn(1, 15)
         out = model(x)
         assert out.shape == (1, 1)
 
     def test_parameter_count(self) -> None:
-        """MLP-T3: Parameter count ≈ 17,601 within 5%."""
+        """MLP-T3: Parameter count ≈ 17,665 within 5% (15-dim input)."""
         model = MLPModel(window_size=10, hidden_sizes=[64, 128, 64])
         count = model.count_parameters()
-        expected = 17_601
+        expected = 17_665
         assert abs(count - expected) / expected < 0.05, f"Got {count}, expected ~{expected}"
 
     def test_gradients_flow(self) -> None:
         """MLP-T4: Gradients flow through all linear layers."""
         model = MLPModel(window_size=10, hidden_sizes=[64, 128, 64])
-        x = torch.randn(8, 14)
+        x = torch.randn(8, 15)
         out = model(x)
         loss = out.sum()
         loss.backward()
@@ -58,14 +58,14 @@ class TestMLPModel:
     def test_wrong_input_dim_raises(self) -> None:
         """MLP-T6: Wrong input dimension raises RuntimeError."""
         model = MLPModel(window_size=10, hidden_sizes=[64, 128, 64])
-        x = torch.randn(8, 13)
+        x = torch.randn(8, 14)
         with pytest.raises(RuntimeError):
             model(x)
 
     def test_serialise_deserialise(self, tmp_path) -> None:
         """MLP-T7: Save + load produces identical output."""
         model = MLPModel(window_size=10, hidden_sizes=[64, 128, 64])
-        x = torch.randn(4, 14)
+        x = torch.randn(4, 15)
         out1 = model(x)
         path = tmp_path / "mlp.pt"
         torch.save(model.state_dict(), str(path))
@@ -77,6 +77,6 @@ class TestMLPModel:
     def test_custom_hidden_sizes(self) -> None:
         """Custom hidden layer widths produce valid output."""
         model = MLPModel(window_size=10, hidden_sizes=[32, 16])
-        x = torch.randn(4, 14)
+        x = torch.randn(4, 15)
         out = model(x)
         assert out.shape == (4, 1)

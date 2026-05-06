@@ -93,7 +93,7 @@ class DataNormalizer:
             self.std = 1.0
 
     def transform(self, entries: list[dict[str, np.ndarray]]) -> list[dict[str, np.ndarray]]:
-        """Normalise noisy_samples, clean_samples, and target_output in-place."""
+        """Normalise sample tensors; leave ``class_index`` and ``sigma`` unchanged."""
         for e in entries:
             e["noisy_samples"] = ((e["noisy_samples"] - self.mean) / self.std).astype(np.float32)
             e["clean_samples"] = ((e["clean_samples"] - self.mean) / self.std).astype(np.float32)

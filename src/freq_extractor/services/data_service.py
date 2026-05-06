@@ -76,22 +76,32 @@ class DatasetBuilder:
 
     @staticmethod
     def build_windows(
-        clean: np.ndarray, noisy: np.ndarray, freq: int, window_size: int,
+        clean: np.ndarray,
+        noisy: np.ndarray,
+        freq: int,
+        window_size: int,
+        *,
+        sigma: float,
+        class_index: int,
     ) -> list[dict[str, np.ndarray]]:
-        """Create sliding-window entries with one-hot labels.
+        """Create sliding-window entries with one-hot labels, class C, and sigma.
 
-        Returns list of dicts with keys:
-        ``frequency_label``, ``noisy_samples``, ``clean_samples``, ``target_output``.
+        Each dict has ``frequency_label``, ``class_index`` (C), ``sigma``,
+        ``noisy_samples``, ``clean_samples``, ``target_output``.
         """
         n = len(clean)
         if window_size >= n:
             raise ValueError(f"window_size ({window_size}) must be < signal length ({n})")
         one_hot = np.zeros(NUM_CLASSES, dtype=np.float32)
         one_hot[FREQUENCY_INDEX[freq]] = 1.0
+        sig_f = np.float32(sigma)
+        c_idx = np.int32(class_index)
         entries: list[dict[str, np.ndarray]] = []
         for i in range(n - window_size):
             entries.append({
                 "frequency_label": one_hot.copy(),
+                "class_index": c_idx,
+                "sigma": sig_f,
                 "noisy_samples": noisy[i : i + window_size].astype(np.float32),
                 "clean_samples": clean[i : i + window_size].astype(np.float32),
                 "target_output": np.array([clean[i + window_size]], dtype=np.float32),

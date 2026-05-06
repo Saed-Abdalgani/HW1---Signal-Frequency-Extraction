@@ -17,7 +17,7 @@ class TestRNNModel:
     def test_forward_shape(self) -> None:
         """RNN-T1: Forward pass (B=32, T=10) → (32, 1), no NaN."""
         model = RNNModel(hidden_size=64, num_layers=2)
-        x = torch.randn(32, 10, 5)
+        x = torch.randn(32, 10, 6)
         out = model(x)
         assert out.shape == (32, 1)
         assert torch.isfinite(out).all()
@@ -36,7 +36,7 @@ class TestRNNModel:
         """RNN-T4: Variable sequence lengths (T=5 and T=20) work."""
         model = RNNModel(hidden_size=64, num_layers=2)
         for seq_len in [5, 20]:
-            x = torch.randn(4, seq_len, 5)
+            x = torch.randn(4, seq_len, 6)
             out = model(x)
             assert out.shape == (4, 1)
 
@@ -54,7 +54,7 @@ class TestRNNModel:
     def test_gradients_flow(self) -> None:
         """RNN-T6: Gradients flow through both RNN layers."""
         model = RNNModel(hidden_size=64, num_layers=2)
-        x = torch.randn(8, 10, 5)
+        x = torch.randn(8, 10, 6)
         out = model(x)
         out.sum().backward()
         for name, param in model.named_parameters():
@@ -64,7 +64,7 @@ class TestRNNModel:
     def test_dropout_train_vs_eval(self) -> None:
         """RNN-T7: Dropout active in train mode, inactive in eval."""
         model = RNNModel(hidden_size=64, num_layers=2, dropout=0.5)
-        x = torch.randn(16, 10, 5)
+        x = torch.randn(16, 10, 6)
         model.eval()
         with torch.no_grad():
             out1 = model(x)
@@ -74,7 +74,7 @@ class TestRNNModel:
     def test_batch_size_one(self) -> None:
         """Batch size 1 works correctly."""
         model = RNNModel(hidden_size=64, num_layers=2)
-        x = torch.randn(1, 10, 5)
+        x = torch.randn(1, 10, 6)
         out = model(x)
         assert out.shape == (1, 1)
 

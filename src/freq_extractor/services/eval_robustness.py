@@ -15,6 +15,7 @@ from typing import Any
 import numpy as np
 from torch import nn
 
+from freq_extractor.constants import FREQUENCY_INDEX
 from freq_extractor.services.data_service import (
     DatasetBuilder,
     SignalGenerator,
@@ -62,16 +63,20 @@ def run_noise_robustness(
     sig = config["signal"]
     results: dict[float, float] = {}
 
-    for sigma in noise_levels:
+    for noise_std in noise_levels:
         rng = np.random.default_rng(seed)
         gen = SignalGenerator(sig["sampling_rate_hz"], sig["duration_seconds"], sig["amplitude"])
         all_entries: list = []
         for f in sig["frequencies_hz"]:
             phase = rng.uniform(0, 2 * np.pi)
             clean = gen.generate_clean(float(f), phase)
-            noisy = gen.generate_noisy(clean, sigma, rng)
+            noisy = gen.generate_noisy(clean, noise_std, rng)
             all_entries.extend(
-                DatasetBuilder.build_windows(clean, noisy, f, sig["window_size"])
+                DatasetBuilder.build_windows(
+                    clean, noisy, f, sig["window_size"],
+                    sigma=float(noise_std),
+                    class_index=int(FREQUENCY_INDEX[int(f)]),
+                )
             )
 
         norm = DataNormalizer()
@@ -84,6 +89,6 @@ def run_noise_robustness(
             ds, batch_size=config["training"]["batch_size"], shuffle=False,
         )
         criterion = nn.MSELoss()
-        results[sigma] = evaluate(model, loader, criterion)
+        results[noise_std] = evaluate(model, loader, criterion)
 
     return results

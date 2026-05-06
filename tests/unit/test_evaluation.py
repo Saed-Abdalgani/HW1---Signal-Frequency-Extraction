@@ -18,7 +18,7 @@ from freq_extractor.services.evaluation_service import (
 
 def _trivial_loader(n: int = 32) -> DataLoader:
     """Create a trivial DataLoader for metric tests."""
-    x = torch.randn(n, 14)
+    x = torch.randn(n, 15)
     y = torch.randn(n, 1)
     return DataLoader(TensorDataset(x, y), batch_size=16)
 
@@ -28,7 +28,7 @@ class TestComputeSplitMSE:
 
     def test_returns_all_splits(self) -> None:
         """compute_split_mse returns dict with train, val, test keys."""
-        model = nn.Sequential(nn.Linear(14, 1))
+        model = nn.Sequential(nn.Linear(15, 1))
         loaders = {
             "train": _trivial_loader(),
             "val": _trivial_loader(),
@@ -41,7 +41,7 @@ class TestComputeSplitMSE:
 
     def test_mse_non_negative(self) -> None:
         """All MSE values are non-negative."""
-        model = nn.Sequential(nn.Linear(14, 1))
+        model = nn.Sequential(nn.Linear(15, 1))
         loaders = {"train": _trivial_loader(), "val": _trivial_loader()}
         result = compute_split_mse(model, loaders)
         for v in result.values():

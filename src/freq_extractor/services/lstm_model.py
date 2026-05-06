@@ -1,6 +1,6 @@
 """Long Short-Term Memory network for frequency extraction.
 
-Architecture: 2-layer LSTM (input_size=5, hidden=64, dropout=0.1)
+Architecture: 2-layer LSTM (input_size=6, hidden=64, dropout=0.1)
 followed by a linear head.  The LSTM's gated memory cells allow the
 model to retain information across the full 10-step sliding window,
 giving it an advantage over the vanilla RNN for low-frequency signals.
@@ -15,7 +15,7 @@ from __future__ import annotations
 import torch
 from torch import nn
 
-from freq_extractor.constants import NUM_CLASSES
+from freq_extractor.constants import SEQ_INPUT_SIZE
 
 
 class LSTMModel(nn.Module):
@@ -24,7 +24,7 @@ class LSTMModel(nn.Module):
     Parameters
     ----------
     input_size : int
-        Features per timestep (default ``1 + NUM_CLASSES = 5``).
+        Features per timestep (default ``SEQ_INPUT_SIZE``).
     hidden_size : int
         LSTM hidden dimension (default 64).
     num_layers : int
@@ -35,7 +35,7 @@ class LSTMModel(nn.Module):
 
     def __init__(
         self,
-        input_size: int = 1 + NUM_CLASSES,
+        input_size: int = SEQ_INPUT_SIZE,
         hidden_size: int = 64,
         num_layers: int = 2,
         dropout: float = 0.1,
