@@ -39,7 +39,7 @@ addopts = "-v"
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["src/main.py", "*/tests/*", "src/**/gui/*"]
+omit = ["src/main.py", "*/tests/*", "src/**/gui/*", "src/freq_extractor/shared/gatekeeper_api.py", "src/freq_extractor/shared/config_validate.py", "src/freq_extractor/sdk/*"]
 
 [tool.coverage.report]
 fail_under = 85

@@ -1,9 +1,12 @@
 """Dash callbacks for the Sinusoid Explorer — signals and controls."""
 from __future__ import annotations
+
 from typing import Any
+
 import numpy as np
 import plotly.graph_objects as go
 from dash import Input, Output, State
+
 from freq_extractor.services.ui_analysis import register_analysis_callbacks
 from freq_extractor.services.ui_layout import SIN_COLOURS
 from freq_extractor.services.ui_signal_utils import (

@@ -1,0 +1,13 @@
+/* Per-sinusoid slider ID-based overrides (backup to class-based) */
+
+#freq-1 .rc-slider-track, #phase-1 .rc-slider-track, #amp-1 .rc-slider-track, #sigma-1 .rc-slider-track { background-color: #00FFFF !important; }
+#freq-1 .rc-slider-handle, #phase-1 .rc-slider-handle, #amp-1 .rc-slider-handle, #sigma-1 .rc-slider-handle { border: none !important; background-color: #00FFFF !important; box-shadow: 0 0 10px 1px #00FFFF !important; }
+
+#freq-2 .rc-slider-track, #phase-2 .rc-slider-track, #amp-2 .rc-slider-track, #sigma-2 .rc-slider-track { background-color: #FF7F00 !important; }
+#freq-2 .rc-slider-handle, #phase-2 .rc-slider-handle, #amp-2 .rc-slider-handle, #sigma-2 .rc-slider-handle { border: none !important; background-color: #FF7F00 !important; box-shadow: 0 0 10px 1px #FF7F00 !important; }
+
+#freq-3 .rc-slider-track, #phase-3 .rc-slider-track, #amp-3 .rc-slider-track, #sigma-3 .rc-slider-track { background-color: #00FF00 !important; }
+#freq-3 .rc-slider-handle, #phase-3 .rc-slider-handle, #amp-3 .rc-slider-handle, #sigma-3 .rc-slider-handle { border: none !important; background-color: #00FF00 !important; box-shadow: 0 0 10px 1px #00FF00 !important; }
+
+#freq-4 .rc-slider-track, #phase-4 .rc-slider-track, #amp-4 .rc-slider-track, #sigma-4 .rc-slider-track { background-color: #FFFF00 !important; }
+#freq-4 .rc-slider-handle, #phase-4 .rc-slider-handle, #amp-4 .rc-slider-handle, #sigma-4 .rc-slider-handle { border: none !important; background-color: #FFFF00 !important; box-shadow: 0 0 10px 1px #FFFF00 !important; }

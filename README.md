@@ -371,22 +371,133 @@ The implementation follows the ADRs in [docs/PLAN.md](docs/PLAN.md):
 The following screenshots demonstrate the interactive dashboard functioning correctly across multiple configurations, parameter changes, and visualisations.
 
 ![Dashboard State 1](screenshots/dash_1.png)
+*Dashboard State 1: Default initialization showing four individual pure sinusoids and the resulting combined clean signal.*
+
 ![Dashboard State 2](screenshots/dash_2.png)
+*Dashboard State 2: Adjusting individual frequencies, phases, and amplitudes to observe real-time waveform updates.*
+
 ![Dashboard State 3](screenshots/dash_3.png)
+*Dashboard State 3: Injecting global uniform noise to simulate real-world sensor interference on the combined signal.*
+
 ![Dashboard State 4](screenshots/dash_4.png)
+*Dashboard State 4: Toggling display mode from continuous lines to discrete sampled dots.*
+
 ![Dashboard State 5](screenshots/dash_5.png)
+*Dashboard State 5: Increasing the sampling frequency to observe higher resolution discrete data points.*
+
 ![Dashboard State 6](screenshots/dash_6.png)
+*Dashboard State 6: Expanding the N-Cycles parameter to visualize a wider temporal window.*
+
 ![Dashboard State 7](screenshots/dash_7.png)
+*Dashboard State 7: Complex mixing of high-frequency sinusoids under heavy noise conditions.*
+
 ![Dashboard State 8](screenshots/dash_8.png)
+*Dashboard State 8: T-SNE 3D dimensionality reduction visualization clustering the signal components.*
+
 ![Dashboard State 9](screenshots/dash_9.png)
+*Dashboard State 9: Adjusting the T-SNE perplexity slider to refine cluster separation and data grouping.*
+
 ![Dashboard State 10](screenshots/dash_10.png)
+*Dashboard State 10: PCA 3D visualization revealing the orthogonal principal components of the dataset.*
+
 ![Dashboard State 11](screenshots/dash_11.png)
+*Dashboard State 11: Rotating the PCA 3D plot to examine variance across different spatial dimensions.*
+
 ![Dashboard State 12](screenshots/dash_12.png)
+*Dashboard State 12: Exploring the frequency domain representation using the FFT Spectrum plot.*
+
 ![Dashboard State 13](screenshots/dash_13.png)
+*Dashboard State 13: Applying a Bandpass filter to isolate specific frequency ranges from the noisy signal.*
+
 ![Dashboard State 14](screenshots/dash_14.png)
+*Dashboard State 14: Applying a Lowpass filter to smooth out high-frequency noise and recover the underlying wave.*
+
 ![Dashboard State 15](screenshots/dash_15.png)
+*Dashboard State 15: Advanced T-SNE 3D projection showcasing a distinct ring topology for the periodic signals.*
+
 ![Dashboard State 16](screenshots/dash_16.png)
+*Dashboard State 16: Exploring the interactive tooltips on the 3D scatter plots for precise coordinate tracking.*
+
 ![Dashboard State 17](screenshots/dash_17.png)
+*Dashboard State 17: Isolating a single sinusoid by toggling the MIX checkboxes in the control panel.*
+
 ![Dashboard State 18](screenshots/dash_18.png)
+*Dashboard State 18: Sweeping noise levels dynamically to observe signal degradation and filter robustness.*
+
 ![Dashboard State 19](screenshots/dash_19.png)
+*Dashboard State 19: High-frequency isolated sinusoid viewed in discrete dot mode with low amplitude.*
+
 ![Dashboard State 20](screenshots/dash_20.png)
+*Dashboard State 20: Final comprehensive view of the fully styled, dark-mode Sinusoid Explorer UI.*
+
+---
+
+## 22. Additional Feature Demonstrations
+
+The following screenshots capture specific UI features not yet shown in the primary dashboard gallery, providing complete proof of all implemented capabilities.
+
+### FFT Spectrum — Log Scale Mode
+
+![FFT Log Scale](screenshots/dash_21.png)
+*The FFT Magnitude Spectrum tab with **Log Scale** enabled (checkbox ticked). The frequency axis switches to logarithmic spacing, making it far easier to distinguish spectral peaks across multiple decades of frequency. The sharp spike at 5 Hz clearly confirms the dominant sinusoid frequency.*
+
+---
+
+### Filter — Highpass Mode
+
+![Highpass Filter Applied](screenshots/dash_22.png)
+*The global **Highpass** filter applied to the composite signal. Low-frequency components are attenuated, isolating only the higher-frequency content. The combined signal clearly shows reduced low-frequency content compared to the unfiltered baseline.*
+
+---
+
+### Filter — Lowpass Mode
+
+![Lowpass Filter Applied](screenshots/dash_23.png)
+*The global **Lowpass** filter applied to the composite signal. High-frequency components are rolled off, leaving only the smooth, slow sinusoidal components. This visually demonstrates the zero-phase `sosfiltfilt` Butterworth implementation.*
+
+---
+
+### Per-Sinusoid Bandpass Filter (BPF Checkbox)
+
+![Per-Sinusoid BPF Enabled](screenshots/dash_24.png)
+*The per-channel **BPF** (Band-Pass Filter) checkbox for Sin 1 is enabled (shown checked in the Sin 1 control block). A narrow bandpass filter centred at Sin 1's frequency is applied independently to that channel before mixing, demonstrating channel-isolated filtering capability.*
+
+---
+
+### Gaussian Noise with Per-Sinusoid Sigma (σ)
+
+![Gaussian Noise + Per-Sin Sigma](screenshots/dash_25.png)
+*Global **Gaussian** noise is active (selected in the Noise dropdown), and per-sinusoid sigma (σ) sliders for Sin 1 are set to 0.40. The individual sinusoid traces show clearly different noise envelopes — Sin 1 (cyan) has visibly more noise than the others — confirming that per-channel additive noise is working independently of the global noise type.*
+### Priority 1: FFT with BPF Bandwidth Shading (FR-12)
+
+![FR-12 BW shaded bandwidth region on FFT Spectrum when per-sinusoid BPF is active](screenshots/dash_26.png)
+*FR-12 BW shaded bandwidth region on FFT Spectrum when per-sinusoid BPF is active.*
+
+---
+
+### Priority 2: Terminal Training Convergence
+
+![Terminal: --mode all run output](screenshots/terminal_training.png)
+*Training convergence logs and final MSE table.*
+
+---
+
+### Priority 3: Pytest Coverage
+
+![Terminal: pytest --cov=src -> >=85%](screenshots/pytest_coverage.png)
+*Pytest test suite showing over 85% coverage on the src directory.*
+
+---
+
+### Priority 5: Live Header Metrics
+
+![FR-9.3 live header metrics bar showing all 6 computed metrics updating in real time](screenshots/dash_27.png)
+*FR-9.3 live header metrics bar showing all 6 computed metrics updating in real time.*
+
+---
+
+### Priority 6: Signal Examples
+
+![Signal Examples showing predicted versus clean target versus noisy signal](results/signal_examples.png)
+*Signal examples visualised post-training showing the model predictions (PRD_training §11).*
+

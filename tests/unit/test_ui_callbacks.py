@@ -4,8 +4,11 @@ Validates the internal helper functions used by Dash callbacks.
 """
 
 from __future__ import annotations
+
 import numpy as np
+
 from freq_extractor.services.ui_callbacks import _add_noise, _apply_bpf, _apply_filter, _gen_signal
+
 
 class TestGenSignal:
     """Signal generation helper tests."""
